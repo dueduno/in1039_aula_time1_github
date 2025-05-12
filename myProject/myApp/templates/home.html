@@ -1,12 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Home</title>
-</head>
-<body>
-    <h1>Hello from home.html!</h1>
-    {% for c in cliente %}
-    {{ c.nome }}
-    {% endfor %}
-</body>
-</html>
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Início - VagaCerta{% endblock %}
+
+{% block content %}
+<div class="intro-container">
+  <div class="img-content">
+    <div class="text-content">
+      <p><b><span style="font-size: 30px;">Aqui no VagaCerta, facilitamos a administração de vagas para empresas e funcionários, e a busca de estacionamento para motoristas.</span></b></p>
+      <p>Se você é um gestor, gerencie e monitore as vagas de forma simples e eficiente. Se você é um motorista, encontre rapidamente uma vaga disponível perto de você.</p>
+    </div>
+    <div class="image-wrapper">
+      <img src="https://www.smartia.com.br/wp-content/uploads/2018/08/direitos-ao-deixar-o-carro-no-estacionamento-2.jpg" width="1000" class="img-fluid rounded" />
+    </div>
+  </div>
+</div>
+
+<div class="info-section text-center p-5">
+  <h2>Mas o que é o <span style="color: #a259d9;"><i><u>VagaCerta</u>?</i></span></h2>
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <i class="fas fa-map-marker-alt fa-2x" style="color:#a259d9;"></i>
+      <p><span style="font-size: larger;">Localização e disponibilidade de vagas em tempo real.</span></p>
+    </div>
+    <div class="col-md-3">
+      <i class="fas fa-calendar-alt fa-2x" style="color:#a259d9;"></i>
+      <p><span style="font-size: larger;">Reserva antecipada de vagas.</span></p>
+    </div>
+    <div class="col-md-3">
+      <i class="fas fa-eye fa-2x" style="color:#a259d9;"></i>
+      <p><span style="font-size: larger;">Relatório e monitoramento para gestores e funcionários.</span></p>
+    </div>
+  </div>
+</div>
+{% endblock %}
