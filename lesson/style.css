@@ -1,9 +1,7 @@
 /* Reset básico */
 
 body {
-  font-family: 'Segoe UI';
-  background-color: #eef3f6;
-  color: #333;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* aplica isso universalmente em todas os elementos da pagina */
@@ -58,15 +56,6 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Seção de informações */
-.info-section {
-  background-color: white;
-}
-
-.info-section h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-}
 
 .info-section .row {
   justify-content: center;
