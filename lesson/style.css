@@ -1,20 +1,105 @@
-html {
-    height: 100%;
-    width: 100%;
+/* Reset básico */
+
+body {
+  font-family: 'Segoe UI';
+  background-color: #eef3f6;
+  color: #333;
 }
 
-.img-content{
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    margin: 150px 200px;
-    text-align: justify;
-
+/* aplica isso universalmente em todas os elementos da pagina */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+/* Navegação */
+.navbar {
+  padding: 1rem 2rem;
+  font-weight: 500;
+}
+
+.navbar-brand {
+  font-size: 40px !important;
+  font-weight: bold;
+}
+
+.nav-link {
+  margin-right: 1rem;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: rgb(209, 200, 200);
+}
+
+/* Container da introdução */
+.intro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+/* Texto de introdução */
 .text-content {
-    display: flex;
+  max-width: 500px;
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+}
+
+/* Imagem */
+.image-wrapper img {
+  border-radius: 20px;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Seção de informações */
+.info-section {
+  background-color: white;
+}
+
+.info-section h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.info-section .row {
+  justify-content: center;
+  gap: 2rem;
+}
+
+.info-section .col-md-3 {
+  max-width: 250px;
+  margin-bottom: 2rem;
+}
+
+.info-section i {
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.info-section p {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+/* Responsividade extra */
+@media (max-width: 768px) {
+  .intro-container {
     flex-direction: column;
-    max-width: 450px;
-    text-align: justify;
+    padding: 2rem;
+  }
+
+  .text-content {
+    text-align: center;
+  }
+
+  .navbar .btn {
+    margin-top: 0.5rem;
+  }
 }
