@@ -9,4 +9,12 @@ def home(request):
     vaga=Vaga.objects.all()
     contem=Contem.objects.all()
     reserva=Reserva.objects.all()
-    return render(request, "myApp/home.html",context={"cliente":cliente}) #Perguntar na aula se eu posso passar uma lista de dicionarios 
+    return render(request, "myApp/home.html",context={
+        "cliente":cliente,
+        "administrador":administrador,
+        "estacionamento":estacionamento,
+        "possui":possui,
+        "vagas":vaga,
+        "contem":contem,
+        "reserva":reserva,
+        })
