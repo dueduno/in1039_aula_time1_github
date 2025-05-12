@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva
 
 def home(request):
+    # cliente = Cliente.objects.filter(nome = "joao").all()
     cliente = Cliente.objects.all()
     administrador = Administrador.objects.all()
     estacionamento=Estacionamento.objects.all()
@@ -9,7 +10,8 @@ def home(request):
     vaga=Vaga.objects.all()
     contem=Contem.objects.all()
     reserva=Reserva.objects.all()
-    return render(request, "myApp/home.html",context={
+
+    context = {
         "cliente":cliente,
         "administrador":administrador,
         "estacionamento":estacionamento,
@@ -17,4 +19,6 @@ def home(request):
         "vagas":vaga,
         "contem":contem,
         "reserva":reserva,
-        })
+    }
+
+    return render(request, "home.html",context=context)
