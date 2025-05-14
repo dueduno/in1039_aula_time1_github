@@ -22,3 +22,48 @@ def home(request):
     }
 
     return render(request, "home.html",context=context)
+
+def base(request):
+    # cliente = Cliente.objects.filter(nome = "joao").all()
+    cliente = Cliente.objects.all()
+    administrador = Administrador.objects.all()
+    estacionamento=Estacionamento.objects.all()
+    possui=Possui.objects.all()
+    vaga=Vaga.objects.all()
+    contem=Contem.objects.all()
+    reserva=Reserva.objects.all()
+
+    context = {
+        "cliente":cliente,
+        "administrador":administrador,
+        "estacionamento":estacionamento,
+        "possui":possui,
+        "vagas":vaga,
+        "contem":contem,
+        "reserva":reserva,
+    }
+
+    return render(request, "base.html",context=context)
+
+
+def entrada(request):
+    # cliente = Cliente.objects.filter(nome = "joao").all()
+    cliente = Cliente.objects.all()
+    administrador = Administrador.objects.all()
+    estacionamento=Estacionamento.objects.all()
+    possui=Possui.objects.all()
+    vaga=Vaga.objects.all()
+    contem=Contem.objects.all()
+    reserva=Reserva.objects.all()
+
+    context = {
+        "cliente":cliente,
+        "administrador":administrador,
+        "estacionamento":estacionamento,
+        "possui":possui,
+        "vagas":vaga,
+        "contem":contem,
+        "reserva":reserva,
+    }
+
+    return render(request, "entrada.html",context=context)
