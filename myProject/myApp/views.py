@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva
 
 def home(request):
@@ -67,3 +68,14 @@ def entrada(request):
     }
 
     return render(request, "entrada.html",context=context)
+
+def create_user(request):
+    if request.method=="POST":
+        user = User.objects.create_user(
+            request.POST["username"],
+            request.POST["email"],
+            request.POST["password"]
+            )
+        user.save
+        return redirect("home")
+    return render(request,"register.html",context={"action":"Adicionar"})
