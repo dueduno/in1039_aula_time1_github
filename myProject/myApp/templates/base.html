@@ -39,6 +39,9 @@
         <div class="d-flex">
           <button class="btn btn-light me-2">Criar conta</button>
           <button class="btn btn-light">Entrar</button>
+          {% if request.user.is_authenticated %} <b>Bem-vindo, {{request.user.username}}</b> <br>
+          <a href="/users/logout">Sair</a>
+          {% endif %}
         </div>
       </div>
     </div>
