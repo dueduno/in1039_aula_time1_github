@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Suporte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body{
+            font-family: 'Montserrat', sans-serif;
+
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Garantir que a tela ocupe toda a altura */
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .retangulo-topo {
+            width: 100%;        /* Largura do retângulo */
+            height: 100px;                 /* Altura do retângulo */
+            background-color: #A151E6; /* Cor de fundo */
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .botao-voltar {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .botao-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            text-decoration: underline;
+        }
+
+        .retangulo-baixo {
+            width: 100%;        /* Largura do retângulo */
+            height: 100px;                 /* Altura do retângulo */
+            background-color: #A151E6; /* Cor de fundo */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+
+        .conteudo {
+            margin-top: 140px;
+            margin-bottom: 140px;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .conteudo h2 {
+            font-size: 55px;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+
+        .conteudo p {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .destaque {
+            font-weight: bold;
+            color: #7C3AB7;
+        }
+
+
+    </style>
+
+</head>
+<body>
+    <div class="retangulo-topo">
+        <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+        <h1 style="text-align: center; color: #ffffff; font-size: 40px;">
+            Suporte
+        </h1>
+    </div>
+
+    <div class="conteudo">
+        <h2><u>Precisa de ajuda?</u></h2><br>
+        <p><span class="destaque">Email:</span> <span style="color: #0d56dd;"><u>suporte@vagacerta.com</u></span></p><br>
+        <p><span class="destaque">Telefone:</span> (21) 9999-9999</p><br>
+        <p><span class="destaque">WhatsApp:</span> (21) 91234-5678</p><br>
+        <p><span class="destaque">Atendimento:</span> Segunda a sexta, das 9:00 às 18:00</p>
+    </div>
+
+    <div class="retangulo-baixo"></div>
+    
+</body>
+</html>

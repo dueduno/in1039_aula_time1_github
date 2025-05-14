@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - VagaCerta</title>
+    <title>Cadastro - VagaCerta</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -68,26 +68,6 @@
             z-index: 1;
         }
 
-        .quadrado-centro {
-            width: 250px;
-            height: 250px;
-            background-color: #7C3AB7;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            /*
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Centraliza o quadrado exatamente no meio 
-            */
-            padding: 20px;
-            box-sizing: border-box;
-            color: white;
-            font-size: 18px;
-            line-height: 1.5;
-            font-family: 'Montserrat', sans-serif;
-        }
-
         .formulario-login{
             max-width: 300px;
         }
@@ -122,13 +102,6 @@
             cursor: pointer;
         }
 
-        .imagem-esquerda {
-            position: fixed; /* Fixa a imagem */
-            top: 100px;       /* Para não ficar atrás do retângulo superior */
-            left: 0;
-            z-index: 0;       /* Atrás dos conteúdos principais */
-            opacity: 0.6;
-        }
         .links-auxiliares {
             margin-top: 15px;
             font-size: 14px;
@@ -144,41 +117,40 @@
         .links-auxiliares a:hover {
             color: #000000;
             text-decoration: underline;
-        }       
-    
+        }     
+
+
     </style>
 </head>
 
 
 <body>
-    <div class="imagem-esquerda">
-        <img src="img_carro_vertical.jpg" width="400">
-    </div>
-
     <div class="retangulo-topo">
         <button class="botao-voltar" onclick="history.back()">← Voltar</button>
     </div>
     <div class="retangulo-baixo"></div>
-    
+
     <div class="container">
-        <div class="quadrado-centro">
-            Acesse sua conta para <br>
-            encontrar e gerenciar <br>
-            vagas com facilidade.
-        </div>
         
         <div class="formulario-login">
-            <h2>Login</h2>
+            <h2 style="text-align: center;">
+                Registre-se
+            </h2>
             <form action="/action_page.php">
+                <input type="username" placeholder="Nome de usuário" name="username" required>
                 <input type="email" placeholder="E-mail" name="email" required>
                 <div style="position: relative;">
                     <input id="password" type="password" placeholder="Senha" name="password" required>
                     <span class="eye-icon" onclick="togglePassword()">👁️</span>
                 </div>
-                <input type="submit" value="Entrar">
+                <div style="position: relative;">
+                    <input id="confirm-password" type="password" placeholder="Confirmar senha" name="confirm-password" required>
+                    <span class="eye-icon" onclick="toggleConfirmPassword()">👁️</span>
+                </div>
+                <input type="submit" value="Registrar">
+
                 <div class="links-auxiliares">
-                    <a href="#" class="link-esqueci">Esqueceu sua senha?</a><br>
-                    <a href="#" class="link-criar">Não tem uma conta? <strong>Crie agora!</strong></a>
+                    <a href="#" class="link-ja-tem">Já tem uma conta? <strong>Entre agora!</strong></a>
                 </div>
             </form>
         </div>
@@ -192,6 +164,29 @@
         }
     </script>
 
+    <script>
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+    }
+    function toggleConfirmPassword() {
+        const confirmPasswordField = document.getElementById('confirm-password');
+        confirmPasswordField.type = confirmPasswordField.type === 'password' ? 'text' : 'password';
+    }
+    // Verificação se as senhas coincidem
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
 
+        if (password !== confirmPassword) {
+            event.preventDefault(); // Impede o envio do formulário
+            alert('As senhas não coincidem. Por favor, verifique.');
+        }
+    });
+    </script>
+
+
+    
 </body>
 </html>
