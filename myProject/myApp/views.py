@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth import authenticate, login,logout,update_session_auth_hash
 from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva
 from django.contrib.auth.decorators import login_required
 
@@ -138,3 +138,36 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect("login")
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        current_password = request.POST.get("current_password")
+        new_password = request.POST.get("new_password")
+        confirm_new_password = request.POST.get("confirm_new_password")
+
+        # Verificar se a senha atual está correta
+        user = authenticate(username=request.user.username, password=current_password)
+        if user is None:
+            return render(request, "change_password.html", context={
+                "error_msg": "Senha atual incorreta."
+            })
+
+        # Verificar se as novas senhas coincidem
+        if new_password != confirm_new_password:
+            return render(request, "change_password.html", context={
+                "error_msg": "As novas senhas não coincidem."
+            })
+
+        # Atualizar a senha
+        try:
+            request.user.set_password(new_password)
+            request.user.save()
+            update_session_auth_hash(request, request.user)  # Manter o usuário logado
+            return redirect("home")
+        except Exception as e:
+            return render(request, "change_password.html", context={
+                "error_msg": f"Erro ao alterar a senha: {str(e)}"
+            })
+
+    return render(request, "change_password.html", context={})
