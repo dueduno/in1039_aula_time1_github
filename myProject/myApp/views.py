@@ -75,15 +75,47 @@ def entrada(request):
     return render(request, "entrada.html",context=context)
 
 def create_user(request):
-    if request.method=="POST":
-        user = User.objects.create_user(
-            request.POST["username"],
-            request.POST["email"],
-            request.POST["password"]
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        confirm_password = request.POST.get("confirm-password")
+
+        # Validação de confirmação de senha
+        if password != confirm_password:
+            return render(request, "register.html", context={
+                "action": "Criar",
+                "error_msg": "As senhas não coincidem. Por favor, verifique."
+            })
+
+        # Verificar se o usuário ou e-mail já existem
+        if User.objects.filter(username=username).exists():
+            return render(request, "register.html", context={
+                "action": "Criar",
+                "error_msg": "Nome de usuário já está em uso."
+            })
+        if User.objects.filter(email=email).exists():
+            return render(request, "register.html", context={
+                "action": "Criar",
+                "error_msg": "E-mail já está em uso."
+            })
+
+        # Criar o usuário
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
             )
-        user.save
-        return redirect("home")
-    return render(request,"register.html",context={"action":"Adicionar"})
+            user.save()
+            return redirect("home")
+        except Exception as e:
+            return render(request, "register.html", context={
+                "action": "Criar",
+                "error_msg": f"Erro ao registrar: {str(e)}"
+            })
+
+    return render(request, "register.html", context={"action": "Criar"})
 
 
 

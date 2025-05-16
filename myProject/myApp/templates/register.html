@@ -1,19 +1,158 @@
-<h1>{{action}} Usuário </h1>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - VagaCerta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-<form method="post">
-    {% csrf_token %}
-    <div>
-        <label>Nome de Usuário:</label>
-        <input type="text" name="username">
-    </div>
-    <div>
-        <label>E-mail:</label>
-        <input type="email" name="email">
-    </div>
-    <div>
-        <label>Senha:</label>
-        <input type="password" name="password">
-    </div>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    <input type="submit" value="Registrar">
-</form>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .retangulo-topo {
+            width: 100%;
+            height: 100px;
+            background-color: #A151E6;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .botao-voltar {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .botao-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            text-decoration: underline;
+        }
+
+        .retangulo-baixo {
+            width: 100%;
+            height: 100px;
+            background-color: #A151E6;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            z-index: 1;
+        }
+
+        .formulario-login {
+            max-width: 300px;
+        }
+
+        .formulario-login h1 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #000;
+            text-align: center;
+        }
+
+        .formulario-login input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .formulario-login input[type="submit"] {
+            background-color: #7C3AB7;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .formulario-login input[type="submit"]:hover {
+            background-color: #5e2e91;
+        }
+
+        .links-auxiliares {
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .links-auxiliares a {
+            color: #000000;
+            text-decoration: none;
+            display: inline-block;
+            margin: 6px 0;
+            transition: color 0.3s ease;
+        }
+
+        .links-auxiliares a:hover {
+            color: #000000;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="retangulo-topo">
+        <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+    </div>
+    <div class="retangulo-baixo"></div>
+
+    <div class="container">
+        <div class="formulario-login">
+            <h1>{{action}} Usuário</h1>
+            <form method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Nome de usuário" name="username" required>
+                <input type="email" placeholder="E-mail" name="email" required>
+                <input id="password" type="password" placeholder="Senha" name="password" required>
+                <input id="confirm-password" type="password" placeholder="Confirmar senha" name="confirm-password" required>
+                <input type="submit" value="Registrar">
+                <span class="error-message">{{ error_msg }}</span>
+                <div class="links-auxiliares">
+                    <a href="{% url 'login' %}" class="link-ja-tem">Já tem uma conta? <strong>Entre agora!</strong></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
