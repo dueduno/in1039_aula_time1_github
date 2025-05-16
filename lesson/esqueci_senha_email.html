@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - VagaCerta</title>
+    <title>Esqueceu sua senha?</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
     <style>
         * {
             box-sizing: border-box;
@@ -71,30 +70,10 @@
             z-index: 1;
         }
 
-        .quadrado-centro {
-            width: 250px;
-            height: 250px;
-            background-color: #7C3AB7;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            /*
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Centraliza o quadrado exatamente no meio 
-            */
-            padding: 20px;
-            box-sizing: border-box;
-            color: white;
-            font-size: 18px;
-            line-height: 1.5;
-            font-family: 'Montserrat', sans-serif;
-        }
-
         .formulario-login{
             max-width: 300px;
         }
-        .formulario-login h2{
+        .formulario-login h{
             font-size: 36px;
             font-weight: 600;
             margin-bottom: 20px;
@@ -119,103 +98,44 @@
             background-color: #5e2e91;
         }
 
-        .password-toggle-icon {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            z-index: 10; /* Para garantir que o ícone fique sobre o input */
-        }
-        .password-toggle-icon i {
-            font-size: 18px;
-            color: #333;
-            transition: color 0.3s ease-in-out;
-        }
-        .password-toggle-icon i:hover {
-            color: #000;
-        }
-        
 
-        .imagem-esquerda {
-            position: fixed; /* Fixa a imagem */
-            top: 100px;       /* Para não ficar atrás do retângulo superior */
-            left: 0;
-            z-index: 0;       /* Atrás dos conteúdos principais */
-            opacity: 0.6;
-        }
-        .links-auxiliares {
-            margin-top: 15px;
-            font-size: 14px;
-            text-align: center;
-        }
-        .links-auxiliares a {
-            color: #000000;
-            text-decoration: none;
-            display: inline-block;
-            margin: 6px 0;
-            transition: color 0.3s ease;
-        }
-        .links-auxiliares a:hover {
-            color: #000000;
-            text-decoration: underline;
-        }       
-    
+
+
     </style>
 </head>
 
-
 <body>
-    <div class="imagem-esquerda">
-        <img src="img_carro_vertical.jpg" width="400">
-    </div>
-
     <div class="retangulo-topo">
         <button class="botao-voltar" onclick="history.back()">← Voltar</button>
     </div>
     <div class="retangulo-baixo"></div>
-    
+
     <div class="container">
-        <div class="quadrado-centro">
-            Acesse sua conta para <br>
-            encontrar e gerenciar <br>
-            vagas com facilidade.
-        </div>
-        
         <div class="formulario-login">
-            <h2>Login</h2>
+            <h4 style="text-align: center;">
+                Insira o e-mail para verificação
+            </h4>
             <form action="/action_page.php">
                 <input type="text" placeholder="Nome de usuário" name="username" required>
+                <input type="email" placeholder="E-mail" name="email" required>
                 <div style="position: relative;">
                     <input id="password" type="password" placeholder="Senha" name="password" required>
-                    <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
+                    <span class="password-toggle-icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
                 </div>
-                <input type="submit" value="Entrar">
+                <div style="position: relative;">
+                    <input id="confirm-password" type="password" placeholder="Confirmar senha" name="confirm-password" required>
+                </div>
+                <input type="submit" value="Registrar">
+
                 <div class="links-auxiliares">
-                    <a href="esqueci_senha_email.html" class="link-esqueci">Esqueceu sua senha?</a><br>
-                    <a href="register.html" class="link-criar">Não tem uma conta? <strong>Crie agora!</strong></a>
+                    <a href="login.html" class="link-ja-tem">Já tem uma conta? <strong>Entre agora!</strong></a>
                 </div>
             </form>
         </div>
     </div>
 
-    <script>  //fazer a senha ficar "invisivel"
-        const passwordField = document.getElementById("password");
-        const togglePassword = document.querySelector(".password-toggle-icon i");
-
-        togglePassword.addEventListener("click", function () {
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            togglePassword.classList.remove("fa-eye");
-            togglePassword.classList.add("fa-eye-slash");
-        } else {
-            passwordField.type = "password";
-            togglePassword.classList.remove("fa-eye-slash");
-            togglePassword.classList.add("fa-eye");
-        }
-        });
-    </script>
-
-
+    
 </body>
 </html>
