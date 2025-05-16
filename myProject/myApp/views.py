@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout,update_session_auth_hash
@@ -140,6 +141,7 @@ def logout_user(request):
     return redirect("login")
 
 @login_required
+@login_required
 def change_password(request):
     if request.method == "POST":
         current_password = request.POST.get("current_password")
@@ -164,6 +166,7 @@ def change_password(request):
             request.user.set_password(new_password)
             request.user.save()
             update_session_auth_hash(request, request.user)  # Manter o usuário logado
+            messages.success(request, "Senha alterada com sucesso!")
             return redirect("home")
         except Exception as e:
             return render(request, "change_password.html", context={
