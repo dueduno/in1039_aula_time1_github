@@ -31,10 +31,18 @@
             width: 100%;        /* Largura do retângulo */
             height: 100px;                 /* Altura do retângulo */
             background-color: #A151E6; /* Cor de fundo */
-            position: fixed;
             top: 0;
+            position: fixed;
             left: 0;
+            position: absolute;
         }
+        .retangulo-topo h1{
+            position: absolute;
+            top: 25px;
+            left: 450px;
+            
+        }
+
         .botao-voltar {
             position: absolute;
             top: 25px;
@@ -82,7 +90,7 @@
         .formulario-login input{
             width: 100%;
             padding: 12px;
-            margin: 8px 0;
+            margin: 13px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 14px;
@@ -107,27 +115,21 @@
 <body>
     <div class="retangulo-topo">
         <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+        <h1 style="text-align: center; color: #ffffff; font-size: 40px;">
+            Recuperação de senha
+        </h1>
     </div>
     <div class="retangulo-baixo"></div>
 
     <div class="container">
         <div class="formulario-login">
             <h4 style="text-align: center;">
-                Insira o e-mail para verificação
+                Insira o e-mail para <br>recuperação da senha
             </h4>
             <form action="/action_page.php">
-                <input type="text" placeholder="Nome de usuário" name="username" required>
                 <input type="email" placeholder="E-mail" name="email" required>
-                <div style="position: relative;">
-                    <input id="password" type="password" placeholder="Senha" name="password" required>
-                    <span class="password-toggle-icon">
-                        <i class="fas fa-eye"></i>
-                    </span>
-                </div>
-                <div style="position: relative;">
-                    <input id="confirm-password" type="password" placeholder="Confirmar senha" name="confirm-password" required>
-                </div>
-                <input type="submit" value="Registrar">
+                <div style="position: relative;"></div>
+                <input type="submit" value="Enviar e-mail">
 
                 <div class="links-auxiliares">
                     <a href="login.html" class="link-ja-tem">Já tem uma conta? <strong>Entre agora!</strong></a>
