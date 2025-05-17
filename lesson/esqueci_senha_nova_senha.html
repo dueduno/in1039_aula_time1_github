@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Suporte</title>
+    <title>Insira nova senha</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
     <style>
         * {
             box-sizing: border-box;
@@ -28,11 +30,18 @@
             width: 100%;        /* Largura do retângulo */
             height: 100px;                 /* Altura do retângulo */
             background-color: #A151E6; /* Cor de fundo */
-            position: fixed;
             top: 0;
+            position: fixed;
             left: 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            position: absolute;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
         }
+        .retangulo-topo h1{
+            position: absolute;
+            top: 25px;
+            left: 460px;
+        }
+
         .botao-voltar {
             position: absolute;
             top: 25px;
@@ -61,53 +70,58 @@
             box-shadow: 0 5px 50px rgba(0, 0, 0, 0.15);
         }
 
-        .conteudo {
-            margin-top: 140px;
-            margin-bottom: 140px;
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            text-align: center;
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            z-index: 1;
         }
-
-        .conteudo h2 {
-            font-size: 55px;
+        .formulario-login{
+            max-width: 300px;
+        }
+        .formulario-login h{
+            font-size: 36px;
+            font-weight: 600;
             margin-bottom: 20px;
-            color: #000000;
+            color: #000;
         }
-
-        .conteudo p {
-            font-size: 18px;
-            margin: 10px 0;
-            color: #333;
+        .formulario-login input{
+            width: 250px;
+            padding: 12px;
+            margin: 13px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
         }
-
-        .destaque {
+        .formulario-login input[type="submit"] {
+            background-color: #7C3AB7;
+            color: white;
             font-weight: bold;
-            color: #7C3AB7;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+        .formulario-login input[type="submit"]:hover {
+            background-color: #5e2e91;
+        }
+
+
 
 
     </style>
+
 
 </head>
 <body>
     <div class="retangulo-topo">
         <button class="botao-voltar" onclick="history.back()">← Voltar</button>
         <h1 style="text-align: center; color: #ffffff; font-size: 40px;">
-            Suporte
+            Recuperação de senha
         </h1>
     </div>
-
-    <div class="conteudo">
-        <h2><u>Precisa de ajuda?</u></h2><br><br><br>
-        <p><span class="destaque">Email:</span> <span style="color: #0d56dd;"><u>suporte@vagacerta.com</u></span></p><br>
-        <p><span class="destaque">Telefone:</span> (21) 9999-9999</p><br>
-        <p><span class="destaque">WhatsApp:</span> (21) 91234-5678</p><br>
-        <p><span class="destaque">Atendimento:</span> Segunda a sexta, das 9:00 às 18:00</p>
-    </div>
-
     <div class="retangulo-baixo"></div>
+
+
     
 </body>
 </html>
