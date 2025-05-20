@@ -82,6 +82,27 @@
         #search-btn:hover {
             background-color: #8a4ebf;
         }
+
+        /* Estilo para o botão de limpar medição */
+        .clear-distance-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 15px;
+            z-index: 1000;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            color: #a259d9;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid #a259d9;
+            display: none; /* Inicialmente escondido */
+        }
+
+        .clear-distance-btn:hover {
+            background: #f0f0f0;
+        }
         
         .leaflet-top.leaflet-left {
             top: 80px;
@@ -104,6 +125,12 @@
         <div class="map-title">
             <i class="fas fa-map-marker-alt"></i> Encontrar Vagas
         </div>
+        
+        <!-- Botão para limpar medição -->
+        <button class="clear-distance-btn" id="clear-distance">
+            <i class="fas fa-times"></i> Limpar Medição
+        </button>
+        
         <div id="map"></div>
     </div>
 
@@ -123,6 +150,12 @@
         
         // Variável para armazenar o marcador de busca
         let searchMarker = null;
+
+        // Variáveis para o medidor de distância
+        let pontosDistancia = [];
+        let linhaDistancia = null;
+        let marcadoresDistancia = [];
+        const clearDistanceBtn = document.getElementById('clear-distance');
             
         // Geolocalização do usuário
         if (navigator.geolocation) {
@@ -153,6 +186,9 @@
         document.getElementById('address-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') buscarEndereco();
         });
+
+        // Função para limpar a medição de distância
+        clearDistanceBtn.addEventListener('click', limparMedicao);
         
         function buscarEndereco() {
             const address = document.getElementById('address-input').value.trim();
@@ -199,6 +235,79 @@
                     btn.innerHTML = '<i class="fas fa-search"></i> Buscar';
                     btn.disabled = false;
                 });
+        }
+
+        // ========== MEDIDOR DE DISTÂNCIA ==========
+        map.on('dblclick', function(e) {
+            pontosDistancia.push(e.latlng);
+            
+            // Cria um marcador numerado
+            const marcador = L.marker(e.latlng, {
+                icon: L.divIcon({
+                    html: `<div style="color:white;background:#a259d9;border-radius:50%;width:24px;height:24px;display:flex;
+                          align-items:center;justify-content:center;font-weight:bold;">${pontosDistancia.length}</div>`,
+                    className: 'distance-marker'
+                })
+            }).addTo(map);
+            
+            marcadoresDistancia.push(marcador);
+            
+            if (pontosDistancia.length === 1) {
+                // Mostra o botão de limpar quando começa a medição
+                clearDistanceBtn.style.display = 'block';
+            }
+            
+            if (pontosDistancia.length === 2) {
+                // Desenha a linha entre os pontos
+                if (linhaDistancia) map.removeLayer(linhaDistancia);
+                
+                linhaDistancia = L.polyline(pontosDistancia, {
+                    color: '#a259d9',
+                    weight: 3,
+                    dashArray: '5, 5'
+                }).addTo(map);
+                
+                // Calcula a distância em metros e converte para km
+                const distancia = map.distance(pontosDistancia[0], pontosDistancia[1]);
+                const distanciaKm = (distancia / 1000).toFixed(2);
+                
+                // Mostra a distância em um popup no meio da linha
+                const pontoMedio = map.layerPointToLatLng(
+                    L.point(
+                        (map.latLngToLayerPoint(pontosDistancia[0]).x + map.latLngToLayerPoint(pontosDistancia[1]).x) / 2,
+                        (map.latLngToLayerPoint(pontosDistancia[0]).y + map.latLngToLayerPoint(pontosDistancia[1]).y) / 2
+                    )
+                );
+                
+                L.popup()
+                    .setLatLng(pontoMedio)
+                    .setContent(`Distância: ${distanciaKm} km`)
+                    .openOn(map);
+                
+                // Reseta para uma nova medição
+                pontosDistancia = [];
+            }
+        });
+
+        function limparMedicao() {
+            // Remove a linha
+            if (linhaDistancia) {
+                map.removeLayer(linhaDistancia);
+                linhaDistancia = null;
+            }
+            
+            // Remove os marcadores
+            marcadoresDistancia.forEach(marker => map.removeLayer(marker));
+            marcadoresDistancia = [];
+            
+            // Reseta os pontos
+            pontosDistancia = [];
+            
+            // Esconde o botão
+            clearDistanceBtn.style.display = 'none';
+            
+            // Fecha todos os popups
+            map.closePopup();
         }
     </script>
 </body>
