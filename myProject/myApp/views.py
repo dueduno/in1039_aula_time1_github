@@ -174,3 +174,6 @@ def change_password(request):
             })
 
     return render(request, "change_password.html", context={})
+
+def mapa(request):
+    return render(request,'mapa.html')

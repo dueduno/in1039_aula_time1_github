@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encontrar Vagas - VagaCerta</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        
+        #map-container {
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .map-title {
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            z-index: 1000;
+            background-color: rgba(255,255,255,0.9);
+            padding: 8px 20px;
+            border-radius: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            color: #a259d9;
+            font-weight: bold;
+            font-size: 1.3em;
+            border: 2px solid #a259d9;
+        }
+        
+        .search-box {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            padding: 8px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 8px;
+        }
+        
+        #address-input {
+            padding: 8px 15px;
+            border: 1px solid #a259d9;
+            border-radius: 15px;
+            width: 250px;
+            outline: none;
+        }
+        
+        #search-btn {
+            background-color: #a259d9;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #search-btn:hover {
+            background-color: #8a4ebf;
+        }
+        
+        .leaflet-top.leaflet-left {
+            top: 80px;
+            left: 10px;
+        }
+        
+        .leaflet-control-zoom a {
+            color: #a259d9 !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <div class="search-box">
+            <input type="text" id="address-input" placeholder="Digite um endereço...">
+            <button id="search-btn"><i class="fas fa-search"></i> Buscar</button>
+        </div>
+        
+        <div class="map-title">
+            <i class="fas fa-map-marker-alt"></i> Encontrar Vagas
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <script>
+        // Inicialização do mapa
+        const map = L.map('map').setView([-23.5505, -46.6333], 13);
+        
+        // Camada do OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+        
+        // Variável para armazenar o marcador de busca
+        let searchMarker = null;
+            
+        // Geolocalização do usuário
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+                
+                // Centralizar no usuário
+                map.setView([userLat, userLng], 15);
+                
+                // Adicionar marcador da posição do usuário
+                L.marker([userLat, userLng], {
+                    icon: L.divIcon({
+                        html: '<i class="fas fa-user" style="color: #a259d9; font-size: 20px;"></i>',
+                        className: 'user-icon'
+                    })
+                }).addTo(map)
+                .bindPopup("Sua localização atual");
+            }, (error) => {
+                console.log("Erro ao obter localização:", error);
+            }, {
+                enableHighAccuracy: true
+            });
+        }
+        
+        // Função de busca por endereço
+        document.getElementById('search-btn').addEventListener('click', buscarEndereco);
+        document.getElementById('address-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') buscarEndereco();
+        });
+        
+        function buscarEndereco() {
+            const address = document.getElementById('address-input').value.trim();
+            if (!address) return;
+            
+            const btn = document.getElementById('search-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+            btn.disabled = true;
+            
+            // Usa o Nominatim (OpenStreetMap) para geocodificação
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lon = parseFloat(data[0].lon);
+                        
+                        // Remove o marcador anterior se existir
+                        if (searchMarker) {
+                            map.removeLayer(searchMarker);
+                        }
+                        
+                        // Centraliza o mapa no local encontrado
+                        map.setView([lat, lon], 17);
+                        
+                        // Adiciona um novo marcador
+                        searchMarker = L.marker([lat, lon], {
+                            icon: L.divIcon({
+                                html: '<i class="fas fa-map-pin" style="color: #a259d9; font-size: 28px;"></i>',
+                                className: 'search-icon'
+                            })
+                        }).addTo(map)
+                        .bindPopup(`<b>${data[0].display_name}</b>`)
+                        .openPopup();
+                    } else {
+                        alert("Endereço não encontrado. Tente ser mais específico.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro na busca:", error);
+                    alert("Ocorreu um erro ao buscar o endereço");
+                })
+                .finally(() => {
+                    btn.innerHTML = '<i class="fas fa-search"></i> Buscar';
+                    btn.disabled = false;
+                });
+        }
+    </script>
+</body>
+</html>
