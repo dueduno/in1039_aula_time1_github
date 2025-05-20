@@ -15,31 +15,33 @@
             box-sizing: border-box;
         }
 
-        body{
+        body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
-            height: 100vh; /* Garantir que a tela ocupe toda a altura */
+            height: 100vh;
             background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .retangulo-topo {
+            width: 100%;
+            height: 100px;
+            background-color: #A151E6;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .retangulo-topo {
-            width: 100%;        /* Largura do retângulo */
-            height: 100px;                 /* Altura do retângulo */
-            background-color: #A151E6; /* Cor de fundo */
-            top: 0;
-            position: fixed;
-            left: 0;
-            position: absolute;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
-        }
-        .retangulo-topo h1{
-            position: absolute;
-            top: 25px;
-            left: 460px;
+        .retangulo-topo h1 {
+            color: white;
+            font-size: 40px;
+            margin: 0;
         }
 
         .botao-voltar {
@@ -55,15 +57,16 @@
             border-radius: 8px;
             cursor: pointer;
         }
+
         .botao-voltar:hover {
             background-color: rgba(255, 255, 255, 0.3);
             text-decoration: underline;
         }
 
         .retangulo-baixo {
-            width: 100%;        /* Largura do retângulo */
-            height: 100px;                 /* Altura do retângulo */
-            background-color: #A151E6; /* Cor de fundo */
+            width: 100%;
+            height: 100px;
+            background-color: #A151E6;
             position: fixed;
             bottom: 0;
             left: 0;
@@ -71,29 +74,39 @@
         }
 
         .container {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 60px;
-            z-index: 1;
+            padding-top: 120px;
+            padding-bottom: 120px;
         }
-        .formulario-login{
+
+        .formulario-login {
             max-width: 300px;
+            text-align: center;
         }
-        .formulario-login h{
-            font-size: 36px;
+
+        .formulario-login h2 {
+            font-size: 27px;
             font-weight: 600;
             margin-bottom: 20px;
             color: #000;
         }
-        .formulario-login input{
-            width: 250px;
+
+        .formulario-login input {
+            width: 100%;
             padding: 12px;
             margin: 13px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 14px;
         }
+
+        .formulario-login input[type="password"] {
+            padding-right: 40px;
+        }
+
         .formulario-login input[type="submit"] {
             background-color: #7C3AB7;
             color: white;
@@ -101,11 +114,32 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
         .formulario-login input[type="submit"]:hover {
             background-color: #5e2e91;
         }
 
+        .input-wrapper {
+            position: relative;
+        }
 
+        .password-toggle-icon {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .password-toggle-icon i {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .password-toggle-icon i:hover {
+            color: #000;
+        }
     </style>
 
 
@@ -118,6 +152,66 @@
         </h1>
     </div>
     <div class="retangulo-baixo"></div>
+
+    <div class="container">
+        
+        <div class="formulario-login">
+            <h2>Insira sua nova senha</h2>
+            <form action="/action_page.php">
+                <div class="input-wrapper">
+                    <input id="password" type="password" placeholder="Senha" name="password" required>
+                    <span class="password-toggle-icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+                <div class="input-wrapper">
+                    <input id="confirm-password" type="password" placeholder="Confirmar senha" name="confirm-password" required>
+                </div>
+                <input type="submit" value="Alterar senha">
+            </form>
+        </div>
+    </div>
+
+    <script>  //fazer a senha ficar "invisivel"
+        const passwordField = document.getElementById("password");
+        const togglePassword = document.querySelector(".password-toggle-icon i");
+
+        togglePassword.addEventListener("click", function () {
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            togglePassword.classList.remove("fa-eye");
+            togglePassword.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            togglePassword.classList.remove("fa-eye-slash");
+            togglePassword.classList.add("fa-eye");
+        }
+        });
+    </script>
+
+    <script>
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+    }
+    function toggleConfirmPassword() {
+        const confirmPasswordField = document.getElementById('confirm-password');
+        confirmPasswordField.type = confirmPasswordField.type === 'password' ? 'text' : 'password';
+    }
+    // Verificação se as senhas coincidem
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        if (password !== confirmPassword) {
+            event.preventDefault(); // Impede o envio do formulário
+            alert('As senhas não coincidem. Por favor, verifique.');
+        }
+    });
+    </script>
+
+
 
 
     
