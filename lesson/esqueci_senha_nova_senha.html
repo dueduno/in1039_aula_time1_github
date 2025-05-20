@@ -70,7 +70,13 @@
             position: fixed;
             bottom: 0;
             left: 0;
-            box-shadow: 0 5px 50px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            font-size: 18px;
+            z-index: 10;
         }
 
         .container {
@@ -119,6 +125,18 @@
             background-color: #5e2e91;
         }
 
+        .link-footer {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .link-footer:hover {
+            text-decoration: underline;
+        }
+
         .input-wrapper {
             position: relative;
         }
@@ -151,7 +169,11 @@
             Recuperação de senha
         </h1>
     </div>
-    <div class="retangulo-baixo"></div>
+    <div class="retangulo-baixo">
+        <button class="link-footer" onclick="window.location.href='suporte.html'">Suporte</button>
+        <button class="link-footer" onclick="window.location.href='termo_de_uso.html'">Termos de Uso</button>
+        <button class="link-footer" onclick="window.location.href='politica_de_privacidade.html'">Política de Privacidade</button>
+    </div>
 
     <div class="container">
         
