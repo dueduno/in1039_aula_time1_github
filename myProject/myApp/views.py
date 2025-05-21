@@ -129,7 +129,7 @@ def login_user(request):
         if user!=None:
             login(request,user)
         else:
-            return render(request,"login.html",context={"error_msg":"Usuário não existe"})
+            return render(request,"login.html",context={"error_msg":"Usuário não pode ser autenticado"})
 
         if request.user.is_authenticated:
             return redirect("home")
