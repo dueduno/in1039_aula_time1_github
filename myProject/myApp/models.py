@@ -23,7 +23,7 @@ class Estacionamento(models.Model):
     total_vagas = models.IntegerField()
     vagas_disponiveis = models.IntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-
+    
     def __str__(self):
         return self.nome
 

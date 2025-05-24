@@ -175,8 +175,12 @@ def change_password(request):
 
     return render(request, "change_password.html", context={})
 
+@login_required
 def mapa(request):
-    return render(request,'mapa.html')
+    # Recupera todos os estacionamentos do banco (tabela myApp_estacionamento)
+    estacionamentos = Estacionamento.objects.all()
+    # Passa os dados para o template
+    return render(request, 'mapa.html', {'estacionamentos': estacionamentos})
 
 @login_required
 def criar_estacionamento(request):
