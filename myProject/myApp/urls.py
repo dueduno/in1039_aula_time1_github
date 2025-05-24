@@ -3,6 +3,7 @@ from django.urls import path,include
 from django.contrib import admin
 
 urlpatterns = [
+    path('criar-estacionamento/', views.criar_estacionamento, name='criar_estacionamento'),
     path('mapa/', views.mapa, name='mapa'),
     path('users/change_password/',views.change_password,name='change_password'),
     path("users/", views.create_user, name="user"),

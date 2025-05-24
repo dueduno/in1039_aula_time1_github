@@ -177,3 +177,23 @@ def change_password(request):
 
 def mapa(request):
     return render(request,'mapa.html')
+
+@login_required
+def criar_estacionamento(request):
+    if request.method == 'POST':
+        try:
+            # Cria o estacionamento com os dados do formulário
+            Estacionamento.objects.create(
+                nome=request.POST['nome'],
+                endereco=request.POST['endereco'],
+                total_vagas=int(request.POST['total_vagas']),
+                vagas_disponiveis=int(request.POST['total_vagas']),  # Inicia com todas vagas disponíveis
+                preco=float(request.POST['preco'])
+            )
+            messages.success(request, 'Estacionamento cadastrado com sucesso!')
+            return redirect('lista_estacionamentos')  # Redireciona para a lista de estacionamentos
+            
+        except Exception as e:
+            messages.error(request, f'Erro ao cadastrar: {str(e)}')
+    
+    return render(request, 'criar_estacionamento.html')
