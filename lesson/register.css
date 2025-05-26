@@ -1,0 +1,131 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Garantir que a tela ocupe toda a altura */
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.retangulo-topo {
+    width: 100%;        /* Largura do retângulo */
+    height: 100px;      /* Altura do retângulo */
+    background-color: #A151E6; /* Cor de fundo */
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.botao-voltar {
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.botao-voltar:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    text-decoration: underline;
+}
+
+.retangulo-baixo {
+    width: 100%;        /* Largura do retângulo */
+    height: 100px;      /* Altura do retângulo */
+    background-color: #A151E6; /* Cor de fundo */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 5px 50px rgba(0, 0, 0, 0.15);
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    z-index: 1;
+}
+
+.formulario-login {
+    max-width: 300px;
+}
+
+.formulario-login h2 {
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.formulario-login input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.formulario-login input[type="submit"] {
+    background-color: #7C3AB7;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.formulario-login input[type="submit"]:hover {
+    background-color: #5e2e91;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 10; /* Para garantir que o ícone fique sobre o input */
+}
+
+.password-toggle-icon i {
+    font-size: 18px;
+    color: #333;
+    transition: color 0.3s ease-in-out;
+}
+
+.password-toggle-icon i:hover {
+    color: #000;
+}
+
+.links-auxiliares {
+    margin-top: 15px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.links-auxiliares a {
+    color: #000000;
+    text-decoration: none;
+    display: inline-block;
+    margin: 6px 0;
+    transition: color 0.3s ease;
+}
+
+.links-auxiliares a:hover {
+    color: #000000;
+    text-decoration: underline;
+}
