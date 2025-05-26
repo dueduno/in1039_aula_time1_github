@@ -180,7 +180,7 @@ def criar_estacionamento(request):
                 preco=float(request.POST['preco'])
             )
             messages.success(request, 'Estacionamento cadastrado com sucesso!')
-            return redirect('lista_estacionamentos')
+            return redirect('mapa')
         except Exception as e:
             messages.error(request, f'Erro ao cadastrar: {str(e)}')
     
