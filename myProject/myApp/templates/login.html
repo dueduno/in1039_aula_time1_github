@@ -1,13 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Login - VagaCerta</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
 
+    <!-- Estilo embutido (login.css integrado) -->
     <style>
         * {
             box-sizing: border-box;
@@ -31,6 +32,26 @@
             position: fixed;
             top: 0;
             left: 0;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .botao-voltar {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .botao-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            text-decoration: underline;
         }
 
         .retangulo-baixo {
@@ -40,6 +61,7 @@
             position: fixed;
             bottom: 0;
             left: 0;
+            box-shadow: 0 5px 50px rgba(0, 0, 0, 0.15);
         }
 
         .container {
@@ -57,15 +79,9 @@
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            box-sizing: border-box;
             color: white;
             font-size: 18px;
             line-height: 1.5;
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
         }
 
         .formulario-login {
@@ -100,26 +116,71 @@
             background-color: #5e2e91;
         }
 
-        .eye-icon {
+        .password-toggle-icon {
             position: absolute;
+            top: 50%;
             right: 10px;
-            top: 15px;
+            transform: translateY(-50%);
             cursor: pointer;
+            z-index: 10;
         }
 
-        .error-message {
-            color: red;
+        .password-toggle-icon i {
+            font-size: 18px;
+            color: #333;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .password-toggle-icon i:hover {
+            color: #000;
+        }
+
+        .imagem-esquerda {
+            position: fixed;
+            top: 100px;
+            left: 0;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        .links-auxiliares {
+            margin-top: 15px;
             font-size: 14px;
-            margin-top: 10px;
-            display: block;
+            text-align: center;
+        }
+
+        .links-auxiliares a {
+            color: #000000;
+            text-decoration: none;
+            display: inline-block;
+            margin: 6px 0;
+            transition: color 0.3s ease;
+        }
+
+        .links-auxiliares a:hover {
+            color: #000000;
+            text-decoration: underline;
         }
     </style>
+
+    <!-- Fontes e ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div class="retangulo-topo"></div>
-    <div class="retangulo-baixo"></div>
+    <div class="imagem-esquerda">
+        <img src="{% static 'img_carro_vertical.jpg' %}" width="450">
+    </div>
 
+    <div class="retangulo-topo">
+        <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+    </div>
+
+    <div class="retangulo-baixo"></div>
+    
     <div class="container">
         <div class="quadrado-centro">
             Acesse sua conta para <br>
@@ -129,25 +190,42 @@
         
         <div class="formulario-login">
             <h2>Login</h2>
-            <form method="post">
+
+            {% if error_msg %}
+                <p style="color: red;">{{ error_msg }}</p>
+            {% endif %}
+
+            <form method="POST" action="">
                 {% csrf_token %}
-                <input type="text" placeholder="Nome de Usuário" name="username" required>
+                <input type="text" placeholder="Nome de usuário" name="username" required>
                 <div style="position: relative;">
                     <input id="password" type="password" placeholder="Senha" name="password" required>
-                    <span class="eye-icon" onclick="togglePassword()">👁️</span>
+                    <span class="password-toggle-icon"><i class="fas fa-eye"></i></span>
                 </div>
                 <input type="submit" value="Entrar">
-                <span class="error-message">{{ error_msg }}</span>
+                <div class="links-auxiliares">
+                    <a href="/esqueci_senha_email.html" class="link-esqueci">Esqueceu sua senha?</a><br>
+                    <a href="/register.html" class="link-criar">Não tem uma conta? <strong>Crie agora!</strong></a>
+                </div>
             </form>
         </div>
     </div>
 
     <script>
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const type = passwordField.type === 'password' ? 'text' : 'password';
-            passwordField.type = type;
-        }
+        const passwordField = document.getElementById("password");
+        const togglePassword = document.querySelector(".password-toggle-icon i");
+
+        togglePassword.addEventListener("click", function () {
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                togglePassword.classList.remove("fa-eye");
+                togglePassword.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                togglePassword.classList.remove("fa-eye-slash");
+                togglePassword.classList.add("fa-eye");
+            }
+        });
     </script>
 </body>
 </html>

@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'myApp',
 ]
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'your_app/templates',  # ← Adiciona a pasta templates como fonte de arquivos estáticos
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

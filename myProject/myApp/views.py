@@ -132,6 +132,9 @@ def logout_user(request):
     logout(request)
     return redirect("login")
 
+def esqueci_senha(request):
+    return render(request,'esqueci_senha_nova_senha')
+
 @login_required
 def change_password(request):
     if request.method == "POST":
