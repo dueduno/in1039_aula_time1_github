@@ -139,6 +139,7 @@ body {
     left: 0;
     z-index: 0;      /* Atrás dos conteúdos principais */
     opacity: 0.6;
+    justify-content: center;
 }
 
 /* Links Auxiliares */
