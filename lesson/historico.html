@@ -1,10 +1,153 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Histórico</title>
-  <link rel="stylesheet" href="fav_hist.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      height: 100%;
+    }
+
+    .barra-roxa {
+      width: 100%;
+      height: 60px;
+      background-color: #A151E6;
+      padding: 10px 60px;
+      color: white;
+      display: flex;
+      align-items: center;
+      position: relative;
+      font-size: 20px;
+      justify-content: center;
+    }
+
+    .barra-roxa ul {
+      list-style: none;
+      display: flex;
+      gap: 60px;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .barra-roxa li a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .barra-roxa li a.ativo {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .botao-voltar {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: transparent;
+      border: none;
+      color: white;
+      font-size: 26px;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .botao-voltar:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      text-decoration: underline;
+    }
+
+    .principal {
+      display: flex;
+      height: calc(100% - 60px);
+    }
+
+    .lado-esquerdo {
+      width: 40%;
+      padding: 10px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    .lado-direito {
+      width: 60%;
+      height: 100%;
+    }
+
+    #mapa {
+      width: 100%;
+      height: 100%;
+    }
+
+    .linha-abas {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .controle-abas {
+      display: flex;
+      flex-direction: row;
+      margin-right: 10px;
+    }
+
+    .btn-controle {
+      height: 30px;
+      width: 30px;
+      margin-bottom: 5px;
+      background-color: #d4b3f5;
+      border: none;
+      cursor: pointer;
+    }
+
+    .abas-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 5px;
+    }
+
+    .aba {
+      background-color: #eee;
+      border: 1px solid #ccc;
+      padding: 5px 10px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .lugares-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .item-endereco {
+      background: #f0f0f0;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-left: 5px solid #A151E6;
+      position: relative;
+    }
+
+    .btn-excluir {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: red;
+    }
+  </style>
 </head>
 <body>
 
@@ -29,10 +172,15 @@
           <button class="aba">Há 2h</button>
           <button class="aba">Há 8h</button>
           <button class="aba">Hoje</button>
+          <button class="aba">Ontem</button>
           <button class="aba">Últimos 7 dias</button>
+          <button class="aba">Últimos 30 dias</button>
           <button class="aba">Este mês</button>
           <button class="aba">MêsTal</button>
+          <button class="aba">Último ano</button>
           <button class="aba">Mais de 6 meses</button>
+          <button class="aba">Favoritos</button>
+          <button class="aba">Personalizado...</button>
         </div>
       </div>
 
@@ -43,12 +191,21 @@
         </div>
       </div>
 
+      <!-- mensagem para se nao possuir historico -->
+      <div id="mensagem-vazia" class="alert alert-info text-center d-none">
+        Você ainda não possui histórico.
+      </div>
+
+      <!-- cada item do historico 
       <div class="item-endereco">
-        <p><strong>Data:</strong> dd/mm/aaaa 24:00h</p>
+        <button class="btn-excluir" onclick="abrirModal(this)">🗑️</button>
+        <p><strong>Data:</strong> 01/01/2024 12:00h</p>
         <p><strong>Nome:</strong> Parque da Cidade</p>
         <p><strong>Endereço:</strong> Av. das Flores, 123</p>
         <p><strong>Anotação:</strong> Ideal para caminhada.</p>
+      -->
       </div>
+
     </section>
 
     <section class="lado-direito">
@@ -56,14 +213,58 @@
     </section>
   </main>
 
+  <!-- modal do boostrap para confirmação para deletar item do historico -->
+  <div class="modal fade" id="modalConfirmarExclusao" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Confirmar exclusão</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja excluir este item do histórico?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmarExclusao">Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    // mapa
     var mapa = L.map('mapa').setView([-15.7942, -47.8822], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: 'Map data © OpenStreetMap contributors'
     }).addTo(mapa);
-
     L.marker([-15.7942, -47.8822]).addTo(mapa).bindPopup("Parque da Cidade").openPopup();
+
+    // mostra mensagem caso nao tenha itens no historico
+    function verificarHistorico() {
+      const itens = document.querySelectorAll('.item-endereco');
+      const mensagem = document.getElementById('mensagem-vazia');
+      if (!itens.length) {
+        mensagem.classList.remove('d-none');
+      }
+    }
+    let itemParaExcluir = null;
+    function abrirModal(botao) {
+      itemParaExcluir = botao.closest('.item-endereco');
+      const modal = new bootstrap.Modal(document.getElementById('modalConfirmarExclusao'));
+      modal.show();
+    }
+    document.getElementById('confirmarExclusao').addEventListener('click', () => {
+      if (itemParaExcluir) {
+        itemParaExcluir.remove();
+        itemParaExcluir = null;
+        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarExclusao')).hide();
+        verificarHistorico();
+      }
+    });
+    verificarHistorico();
   </script>
 </body>
 </html>
