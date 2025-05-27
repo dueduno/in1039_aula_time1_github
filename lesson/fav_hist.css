@@ -1,0 +1,129 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  height: 100%;
+}
+
+.barra-roxa {
+  width: 100%;
+  height: 60px;
+  background-color: #A151E6;
+  padding: 10px 60px;
+  color: white;
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 20px; /* Aumentei a fonte */
+  justify-content: center;
+}
+
+.barra-roxa ul {
+  list-style: none;
+  display: flex;
+  gap: 60px;
+  padding-left: 0;
+  margin: 0;
+}
+
+.barra-roxa li a {
+  color: white;
+  text-decoration: none;
+}
+
+.barra-roxa li a.ativo {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.botao-voltar {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 26px;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.botao-voltar:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  text-decoration: underline;
+}
+
+.principal {
+  display: flex;
+  height: calc(100% - 60px); /* ajustado por conta do header maior */
+}
+
+.lado-esquerdo {
+  width: 40%; /* Reduzi de 50% para 40% */
+  padding: 10px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.lado-direito {
+  width: 60%;
+  height: 100%;
+}
+
+#mapa {
+  width: 100%;
+  height: 100%;
+}
+
+.linha-abas {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.controle-abas {
+  display: flex;
+  flex-direction: row;
+  margin-right: 10px;
+}
+
+.btn-controle {
+  height: 30px;
+  width: 30px;
+  margin-bottom: 5px;
+  background-color: #d4b3f5;
+  border: none;
+  cursor: pointer;
+}
+
+.abas-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 5px;
+}
+
+.aba {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.lugares-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.item-endereco {
+  background: #f0f0f0;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-left: 5px solid #A151E6;
+}

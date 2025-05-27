@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Histórico</title>
+  <link rel="stylesheet" href="fav_hist.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+
+  <header class="barra-roxa">
+    <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+    <nav>
+      <ul>
+        <li><a href="historico.html" class="ativo">Histórico</a></li>
+        <li><a href="favoritos.html">Favoritos</a></li>
+        <li><a href="#">Recentes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="principal">
+    <section class="lado-esquerdo">
+      <div class="linha-abas">
+        <div class="controle-abas">
+          <button class="btn-controle">🗑️</button>
+        </div>
+        <div class="abas-scroll">
+          <button class="aba">Há 2h</button>
+          <button class="aba">Há 8h</button>
+          <button class="aba">Hoje</button>
+          <button class="aba">Últimos 7 dias</button>
+          <button class="aba">Este mês</button>
+          <button class="aba">MêsTal</button>
+          <button class="aba">Mais de 6 meses</button>
+        </div>
+      </div>
+
+      <div class="lugares-topo">
+        <span>Lugares:</span>
+        <div class="controle-lugares">
+          <button class="btn-controle">🗑️</button>
+        </div>
+      </div>
+
+      <div class="item-endereco">
+        <p><strong>Data:</strong> dd/mm/aaaa 24:00h</p>
+        <p><strong>Nome:</strong> Parque da Cidade</p>
+        <p><strong>Endereço:</strong> Av. das Flores, 123</p>
+        <p><strong>Anotação:</strong> Ideal para caminhada.</p>
+      </div>
+    </section>
+
+    <section class="lado-direito">
+      <div id="mapa"></div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var mapa = L.map('mapa').setView([-15.7942, -47.8822], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © OpenStreetMap contributors'
+    }).addTo(mapa);
+
+    L.marker([-15.7942, -47.8822]).addTo(mapa).bindPopup("Parque da Cidade").openPopup();
+  </script>
+</body>
+</html>
