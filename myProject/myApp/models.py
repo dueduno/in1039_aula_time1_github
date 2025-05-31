@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -32,11 +33,23 @@ class Possui(models.Model):
     estacionamento = models.ForeignKey(Estacionamento, on_delete=models.CASCADE)
 
 class Vaga(models.Model):
-    codigo = models.CharField(max_length=20)
-    estacionamento = models.ForeignKey(Estacionamento, on_delete=models.CASCADE)
+    codigo = models.CharField(max_length=10, unique=True)
+    estacionamento = models.ForeignKey(Estacionamento, on_delete=models.CASCADE, related_name='vagas')
+    disponivel = models.BooleanField(default=True) # Pode ser default=False se criada apenas ao reservar.
+    
+    id_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,  
+        null=True,                  
+        blank=True,                 
+        related_name='vagas_reservadas' # Nome para acessar as vagas a partir de um objeto User
+    )
+    
 
     def __str__(self):
-        return self.codigo
+        if self.id_user:
+            return f"Vaga {self.codigo} ({self.estacionamento.nome}) - Reservada por: {self.id_user.username}"
+        return f"Vaga {self.codigo} ({self.estacionamento.nome}) - Disponível"
 
 class Contem(models.Model):
     vaga = models.ForeignKey(Vaga, on_delete=models.CASCADE)

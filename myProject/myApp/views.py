@@ -199,7 +199,7 @@ def reservar_vaga(request):
             # Verificar se há vagas disponíveis
             if estacionamento.vagas_disponiveis <= 0:
                 messages.error(request, 'Nenhuma vaga disponível neste estacionamento.')
-                return redirect('mapa')
+                return redirect('mapa') 
             
             # Decrementar vagas disponíveis
             estacionamento.vagas_disponiveis -= 1
@@ -211,7 +211,8 @@ def reservar_vaga(request):
             # Criar registro na tabela Vaga
             Vaga.objects.create(
                 codigo=codigo_vaga,
-                estacionamento=estacionamento
+                estacionamento=estacionamento,
+                id_user=request.user  
             )
             
             messages.success(request, f'Vaga reservada com sucesso! Código: {codigo_vaga}')
@@ -223,4 +224,5 @@ def reservar_vaga(request):
             messages.error(request, f'Erro ao reservar vaga: {str(e)}')
             return redirect('mapa')
     
+    # Se não for POST, redireciona para o mapa (comportamento original)
     return redirect('mapa')
