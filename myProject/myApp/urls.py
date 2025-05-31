@@ -13,4 +13,5 @@ urlpatterns = [
     path('mapa/', views.mapa, name='mapa'),
     path('criar_estacionamento/', views.criar_estacionamento, name='criar_estacionamento'),
     path('reservar_vaga/', views.reservar_vaga, name='reservar_vaga'),
+    path('sair-vaga/', views.sair_da_vaga, name='sair_vaga'),
 ]

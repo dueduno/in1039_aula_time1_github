@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encontrar Vagas - VagaCerta</title>
     
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
     
-    <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
           integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -114,7 +112,7 @@
         }
         
         .leaflet-top.leaflet-left {
-            top: 80px;
+            top: 80px; /* Ajustado para não sobrepor o título */
             left: 10px;
         }
         
@@ -127,7 +125,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transform: translate(-50%, -100%);
+            transform: translate(-50%, -100%); /* Centraliza o ícone e ancora na base */
             width: 32px;
             height: 32px;
             line-height: 32px;
@@ -156,10 +154,10 @@
 
         .messages-container {
             position: absolute;
-            top: 80px;
+            top: 80px; /* Abaixo da search-box ou título */
             left: 50%;
             transform: translateX(-50%);
-            z-index: 1000;
+            z-index: 2000; /* Para ficar sobre outros elementos */
             width: 80%;
             max-width: 500px;
         }
@@ -194,14 +192,14 @@
         /* Estilo para o histórico de busca */
         .history-dropdown {
             position: absolute;
-            top: 100%;
+            top: 100%; /* Abaixo do input */
             left: 0;
-            width: 250px;
+            width: 100%; /* Largura do .search-input-container */
             background: white;
             border: 1px solid #a259d9;
-            border-radius: 10px;
+            border-radius: 0 0 10px 10px; /* Cantos arredondados apenas embaixo */
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 1000;
+            z-index: 999; /* Abaixo da search-box mas acima do mapa */
             display: none;
             max-height: 150px;
             overflow-y: auto;
@@ -216,11 +214,51 @@
         .history-item:hover {
             background-color: #f0f0f0;
         }
+
+        /* NOVO: Estilo para o box de "Sair da Vaga" */
+        .sair-vaga-box {
+            position: absolute;
+            top: 100px; /* Posição abaixo do map-title e search-box. Ajuste conforme necessário. */
+            right: 20px; 
+            z-index: 1001; 
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            border: 1px solid #dc3545; 
+            width: 250px; /* Largura definida para melhor apresentação */
+        }
+        .sair-vaga-box p {
+            margin: 0 0 10px 0;
+            font-size: 0.9em;
+            color: #333;
+            line-height: 1.4;
+        }
+        .sair-vaga-box strong {
+            color: #555;
+        }
+        .btn-sair-vaga {
+            background-color: #dc3545; 
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 100%; 
+            margin-top: 5px;
+        }
+        .btn-sair-vaga:hover {
+            background-color: #c82333; 
+        }
+        .btn-sair-vaga i {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <div id="map-container">
-        <!-- Exibição de mensagens -->
         {% if messages %}
         <div class="messages-container">
             {% for message in messages %}
@@ -232,6 +270,21 @@
         </div>
         {% endif %}
 
+        {% if user.is_authenticated and reserva_ativa_do_usuario %}
+        <div class="sair-vaga-box">
+            <p style="font-size: 1em; color: #333; margin-bottom: 8px; font-weight: bold;">Sua Reserva Ativa:</p>
+            <p>
+                <strong>Estacionamento:</strong><br> {{ reserva_ativa_do_usuario.estacionamento.nome }}<br>
+                <strong>Código da Vaga:</strong><br> {{ reserva_ativa_do_usuario.codigo }}
+            </p>
+            <form action="{% url 'sair_vaga' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-sair-vaga" onclick="return confirm('Tem certeza que deseja sair desta vaga? Ela ficará disponível para outros usuários.');">
+                    <i class="fas fa-times-circle"></i> Sair da Vaga
+                </button>
+            </form>
+        </div>
+        {% endif %}
         <div class="search-box">
             <div class="search-input-container">
                 <input type="text" id="address-input" placeholder="Digite um endereço ou nome do estacionamento...">
@@ -251,7 +304,6 @@
         <div id="map"></div>
     </div>
 
-    <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
@@ -260,20 +312,20 @@
         // Verifica se o Font Awesome foi carregado
         window.addEventListener('load', () => {
             const faTest = document.createElement('i');
-            faTest.className = 'fas fa-parking';
+            faTest.className = 'fas fa-parking'; // Um ícone qualquer do Font Awesome
             document.body.appendChild(faTest);
             const isFontAwesomeLoaded = window.getComputedStyle(faTest).fontFamily.includes('Font Awesome');
             document.body.removeChild(faTest);
             if (!isFontAwesomeLoaded) {
-                console.error('Font Awesome não foi carregado. Usando ícone de fallback.');
+                console.error('Font Awesome não foi carregado. Ícones podem não aparecer corretamente.');
             }
         });
 
         // Inicialização do mapa
-        const map = L.map('map').setView([-23.5505, -46.6333], 13);
+        const map = L.map('map').setView([-23.5505, -46.6333], 13); // São Paulo como centro inicial
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
         
         let searchMarker = null;
@@ -283,7 +335,7 @@
         const clearDistanceBtn = document.getElementById('clear-distance');
         const addressInput = document.getElementById('address-input');
         const historyDropdown = document.getElementById('history-dropdown');
-            
+                
         // Funções para gerenciar o histórico de busca
         function loadSearchHistory() {
             const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
@@ -292,28 +344,29 @@
 
         function saveSearchHistory(query) {
             let history = loadSearchHistory();
-            // Evitar duplicatas
-            if (!history.includes(query)) {
-                history.unshift(query); // Adiciona no início
-                if (history.length > 5) {
-                    history.pop(); // Limita a 5 itens
-                }
-                localStorage.setItem('searchHistory', JSON.stringify(history));
+            const index = history.indexOf(query);
+            if (index > -1) { // Remove se já existir para colocar no topo
+                history.splice(index, 1);
             }
+            history.unshift(query); 
+            if (history.length > 5) {
+                history.pop(); 
+            }
+            localStorage.setItem('searchHistory', JSON.stringify(history));
         }
 
-        function displaySearchHistory() {
-            const history = loadSearchHistory();
+        function displaySearchHistory(filteredHistory) {
+            const historyToDisplay = filteredHistory || loadSearchHistory();
             historyDropdown.innerHTML = '';
-            if (history.length > 0) {
-                history.forEach(item => {
+            if (historyToDisplay.length > 0) {
+                historyToDisplay.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'history-item';
                     div.textContent = item;
                     div.addEventListener('click', () => {
                         addressInput.value = item;
                         historyDropdown.style.display = 'none';
-                        buscarEndereco();
+                        buscarEndereco(); // Busca ao clicar no histórico
                     });
                     historyDropdown.appendChild(div);
                 });
@@ -323,38 +376,23 @@
             }
         }
 
-        // Exibir histórico ao focar no campo de busca
-        addressInput.addEventListener('focus', displaySearchHistory);
+        addressInput.addEventListener('focus', () => displaySearchHistory());
 
-        // Ocultar histórico ao clicar fora
         document.addEventListener('click', (e) => {
-            if (!addressInput.contains(e.target) && !historyDropdown.contains(e.target)) {
+            if (!addressInput.contains(e.target) && !historyDropdown.contains(e.target) && !document.getElementById('search-btn').contains(e.target)) {
                 historyDropdown.style.display = 'none';
             }
         });
 
-        // Filtrar histórico enquanto digita
         addressInput.addEventListener('input', () => {
             const query = addressInput.value.trim().toLowerCase();
+            if (!query) { // Se o campo estiver vazio, mostrar o histórico completo
+                displaySearchHistory();
+                return;
+            }
             const history = loadSearchHistory();
             const filteredHistory = history.filter(item => item.toLowerCase().includes(query));
-            historyDropdown.innerHTML = '';
-            if (filteredHistory.length > 0 && query) {
-                filteredHistory.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'history-item';
-                    div.textContent = item;
-                    div.addEventListener('click', () => {
-                        addressInput.value = item;
-                        historyDropdown.style.display = 'none';
-                        buscarEndereco();
-                    });
-                    historyDropdown.appendChild(div);
-                });
-                historyDropdown.style.display = 'block';
-            } else {
-                historyDropdown.style.display = 'none';
-            }
+            displaySearchHistory(filteredHistory);
         });
 
         if (navigator.geolocation) {
@@ -369,14 +407,17 @@
                         html: '<i class="fas fa-user" style="color: #a259d9; font-size: 20px;"></i>',
                         className: 'user-icon',
                         iconSize: [20, 20],
-                        iconAnchor: [10, 20]
+                        iconAnchor: [10, 20] 
                     })
                 }).addTo(map)
                 .bindPopup("Sua localização atual");
             }, (error) => {
-                console.log("Erro ao obter localização:", error);
+                console.warn("Erro ao obter localização:", error.message);
+                // Mantém a visualização padrão se a geolocalização falhar
             }, {
-                enableHighAccuracy: true
+                enableHighAccuracy: true,
+                timeout: 10000, // 10 segundos de timeout
+                maximumAge: 0 // Força uma nova leitura
             });
         }
         
@@ -386,6 +427,7 @@
             if (query) {
                 saveSearchHistory(query);
             }
+            historyDropdown.style.display = 'none'; // Ocultar dropdown após busca
         });
         
         addressInput.addEventListener('keypress', function(e) {
@@ -395,6 +437,8 @@
                 if (query) {
                     saveSearchHistory(query);
                 }
+                historyDropdown.style.display = 'none'; // Ocultar dropdown após busca
+                e.preventDefault(); // Prevenir submissão de formulário se o input estiver em um
             }
         });
 
@@ -408,10 +452,14 @@
                 endereco: "{{ estacionamento.endereco | escapejs }}",
                 total_vagas: {{ estacionamento.total_vagas }},
                 vagas_disponiveis: {{ estacionamento.vagas_disponiveis }},
-                preco: {{ estacionamento.preco }}
+                preco: parseFloat("{{ estacionamento.preco }}") // Garantir que é número
             }{% if not forloop.last %},{% endif %}
             {% endfor %}
         ];
+
+        // Variável para saber se o usuário tem uma reserva ativa e em qual estacionamento
+        const idEstacionamentoReservado = {{ reserva_ativa_do_usuario.estacionamento.id|default:"null" }};
+        const usuarioTemReservaAtiva = {{ reserva_ativa_do_usuario|yesno:"true,false" }};
 
         function buscarEndereco() {
             const query = document.getElementById('address-input').value.trim();
@@ -421,118 +469,115 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
             btn.disabled = true;
             
-            const estacionamento = estacionamentos.find(e => 
+            // Tenta encontrar pelo nome do estacionamento primeiro
+            const estacionamentoEncontradoPorNome = estacionamentos.find(e => 
                 e.nome.toLowerCase().includes(query.toLowerCase())
             );
             
-            if (estacionamento) {
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(estacionamento.endereco)}&limit=1`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data.length > 0) {
-                            const lat = parseFloat(data[0].lat);
-                            const lon = parseFloat(data[0].lon);
-                            
-                            if (searchMarker) {
-                                map.removeLayer(searchMarker);
-                            }
-                            
-                            map.setView([lat, lon], 17);
-                            
-                            searchMarker = L.marker([lat, lon], {
-                                icon: L.divIcon({
-                                    html: '<i class="fas fa-parking" style="color: #a259d9; font-size: 32px;"></i>' +
-                                          '<div style="display:none;">' + 
-                                          '<div style="background: #a259d9; width: 32px; height: 32px; border-radius: 50%;"></div>' +
-                                          '</div>',
-                                    className: 'parking-icon',
-                                    iconSize: [32, 32],
-                                    iconAnchor: [16, 32]
-                                })
-                            }).addTo(map)
-                            .bindPopup(`
-                                <b>${estacionamento.nome}</b><br>
-                                Endereço: ${estacionamento.endereco}<br>
-                                Vagas disponíveis: ${estacionamento.vagas_disponiveis}/${estacionamento.total_vagas}<br>
-                                Preço: R$${estacionamento.preco.toFixed(2)}<br>
-                                <button class="reserve-btn" onclick="reservarVaga(${estacionamento.id})" ${estacionamento.vagas_disponiveis === 0 ? 'disabled' : ''}>
-                                    Reservar
-                                </button>
-                            `)
-                            .openPopup();
-                        } else {
-                            console.error(`Endereço não encontrado para o estacionamento: ${estacionamento.endereco}`);
-                            alert("Endereço do estacionamento não encontrado. Verifique o endereço cadastrado.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error(`Erro ao geocodificar ${estacionamento.endereco}:`, error);
-                        alert("Ocorreu um erro ao buscar o estacionamento");
-                    })
-                    .finally(() => {
-                        btn.innerHTML = '<i class="fas fa-search"></i> Buscar';
-                        btn.disabled = false;
-                    });
+            if (estacionamentoEncontradoPorNome) {
+                geocodeAndDisplay(estacionamentoEncontradoPorNome.endereco, estacionamentoEncontradoPorNome);
             } else {
-                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data.length > 0) {
-                            const lat = parseFloat(data[0].lat);
-                            const lon = parseFloat(data[0].lon);
-                            
-                            if (searchMarker) {
-                                map.removeLayer(searchMarker);
-                            }
-                            
-                            map.setView([lat, lon], 17);
-                            
-                            searchMarker = L.marker([lat, lon], {
-                                icon: L.divIcon({
-                                    html: '<i class="fas fa-map-pin" style="color: #a259d9; font-size: 32px;"></i>' +
-                                          '<div style="display:none;">' + 
-                                          '<div style="background: #a259d9; width: 32px; height: 32px; border-radius: 50%;"></div>' +
-                                          '</div>',
-                                    className: 'search-icon',
-                                    iconSize: [32, 32],
-                                    iconAnchor: [16, 32]
-                                })
-                            }).addTo(map)
-                            .bindPopup(`<b>${data[0].display_name}</b>`)
-                            .openPopup();
-                        } else {
-                            alert("Endereço ou estacionamento não encontrado. Tente ser mais específico.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Erro na busca:", error);
-                        alert("Ocorreu um erro ao buscar o endereço");
-                    })
-                    .finally(() => {
-                        btn.innerHTML = '<i class="fas fa-search"></i> Buscar';
-                        btn.disabled = false;
-                    });
+                // Se não encontrar por nome, busca pelo endereço via Nominatim
+                geocodeAndDisplay(query, null);
             }
         }
 
-        // Função para enviar a requisição de reserva
+        function geocodeAndDisplay(enderecoQuery, estacionamentoObj) {
+            const btn = document.getElementById('search-btn'); // Para reabilitar o botão
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(enderecoQuery)}&limit=1`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lon = parseFloat(data[0].lon);
+                        
+                        if (searchMarker) { // Remove marcador de busca anterior
+                            map.removeLayer(searchMarker);
+                        }
+                        
+                        map.setView([lat, lon], 17);
+                        
+                        let popupContent;
+                        let iconHtml;
+
+                        if (estacionamentoObj) { // Se a busca foi por um estacionamento conhecido
+                            iconHtml = '<i class="fas fa-parking" style="color: #a259d9; font-size: 32px;"></i>';
+                            let botaoAcao;
+                            if (usuarioTemReservaAtiva) {
+                                if (idEstacionamentoReservado === estacionamentoObj.id) {
+                                    // Botão SAIR DA VAGA para o estacionamento reservado
+                                    botaoAcao = `<form action="{% url 'sair_vaga' %}" method="post" style="margin-top: 8px; text-align:center;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="reserve-btn" style="background-color: #dc3545;" onclick="return confirm('Tem certeza que deseja sair desta vaga?');">
+                                                        <i class="fas fa-times-circle"></i> Sair da Vaga
+                                                    </button>
+                                                 </form>`;
+                                } else {
+                                    // Usuário tem reserva em OUTRO lugar, desabilita reservar aqui
+                                    botaoAcao = `<button class="reserve-btn" disabled title="Você já possui uma reserva ativa em outro estacionamento.">Reservar</button>`;
+                                }
+                            } else {
+                                // Botão RESERVAR normal
+                                botaoAcao = `<button class="reserve-btn" onclick="reservarVaga(${estacionamentoObj.id})" ${estacionamentoObj.vagas_disponiveis === 0 ? 'disabled' : ''}>
+                                                ${estacionamentoObj.vagas_disponiveis === 0 ? 'Lotado' : 'Reservar'}
+                                             </button>`;
+                            }
+                            popupContent = `
+                                <b>${estacionamentoObj.nome}</b><br>
+                                Endereço: ${estacionamentoObj.endereco}<br>
+                                Vagas disponíveis: ${estacionamentoObj.vagas_disponiveis}/${estacionamentoObj.total_vagas}<br>
+                                Preço: R$${estacionamentoObj.preco.toFixed(2)}<br>
+                                ${botaoAcao}
+                            `;
+                        } else { // Se foi uma busca genérica de endereço
+                            iconHtml = '<i class="fas fa-map-pin" style="color: #a259d9; font-size: 32px;"></i>';
+                            popupContent = `<b>${data[0].display_name}</b>`;
+                        }
+
+                        searchMarker = L.marker([lat, lon], {
+                            icon: L.divIcon({
+                                html: iconHtml,
+                                className: estacionamentoObj ? 'parking-icon' : 'search-icon',
+                                iconSize: [32, 32],
+                                iconAnchor: [16, 32] 
+                            })
+                        }).addTo(map)
+                        .bindPopup(popupContent)
+                        .openPopup();
+                    } else {
+                        alert("Endereço ou estacionamento não encontrado. Tente ser mais específico ou verifique o endereço.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro na busca/geocodificação:", error);
+                    alert("Ocorreu um erro ao buscar o endereço.");
+                })
+                .finally(() => {
+                    btn.innerHTML = '<i class="fas fa-search"></i> Buscar';
+                    btn.disabled = false;
+                });
+        }
+
         function reservarVaga(estacionamentoId) {
+            if (usuarioTemReservaAtiva) {
+                alert("Você já possui uma reserva ativa. Libere a vaga atual antes de reservar uma nova.");
+                return;
+            }
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/reservar_vaga/';
+            form.action = '{% url "reservar_vaga" %}'; // Usando a tag de URL do Django
             
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'estacionamento_id';
-            input.value = estacionamentoId;
-            form.appendChild(input);
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'estacionamento_id';
+            inputId.value = estacionamentoId;
+            form.appendChild(inputId);
             
-            // Adicionar CSRF token
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = '{{ csrf_token }}';
-            form.appendChild(csrfToken);
+            const csrfTokenInput = document.createElement('input');
+            csrfTokenInput.type = 'hidden';
+            csrfTokenInput.name = 'csrfmiddlewaretoken';
+            csrfTokenInput.value = '{{ csrf_token }}'; // CSRF token do Django
+            form.appendChild(csrfTokenInput);
             
             document.body.appendChild(form);
             form.submit();
@@ -545,7 +590,7 @@
             const marcador = L.marker(e.latlng, {
                 icon: L.divIcon({
                     html: `<div style="color:white;background:#a259d9;border-radius:50%;width:24px;height:24px;display:flex;
-                          align-items:center;justify-content:center;font-weight:bold;">${pontosDistancia.length}</div>`,
+                                 align-items:center;justify-content:center;font-weight:bold;">${pontosDistancia.length}</div>`,
                     className: 'distance-marker',
                     iconSize: [24, 24],
                     iconAnchor: [12, 12]
@@ -570,11 +615,10 @@
                 const distancia = map.distance(pontosDistancia[0], pontosDistancia[1]);
                 const distanciaKm = (distancia / 1000).toFixed(2);
                 
-                const pontoMedio = map.layerPointToLatLng(
-                    L.point(
-                        (map.latLngToLayerPoint(pontosDistancia[0]).x + map.latLngToLayerPoint(pontosDistancia[1]).x) / 2,
-                        (map.latLngToLayerPoint(pontosDistancia[0]).y + map.latLngToLayerPoint(pontosDistancia[1]).y) / 2
-                    )
+                // Calcula o ponto médio para o popup de distância
+                const pontoMedio = L.latLng(
+                    (pontosDistancia[0].lat + pontosDistancia[1].lat) / 2,
+                    (pontosDistancia[0].lng + pontosDistancia[1].lng) / 2
                 );
                 
                 L.popup()
@@ -582,7 +626,8 @@
                     .setContent(`Distância: ${distanciaKm} km`)
                     .openOn(map);
                 
-                pontosDistancia = [];
+                // Limpa para a próxima medição, mas mantém a linha e os marcadores visíveis
+                // Para limpar tudo, o usuário usará o botão "Limpar Medição"
             }
         });
 
@@ -591,19 +636,19 @@
                 map.removeLayer(linhaDistancia);
                 linhaDistancia = null;
             }
-            
             marcadoresDistancia.forEach(marker => map.removeLayer(marker));
             marcadoresDistancia = [];
-            
-            pontosDistancia = [];
-            
+            pontosDistancia = []; // Limpa os pontos para a próxima medição de 2 cliques
             clearDistanceBtn.style.display = 'none';
-            
-            map.closePopup();
+            map.closePopup(); // Fecha qualquer popup aberto (incluindo o de distância)
         }
 
-        function adicionarMarcadoresEstacionamentos() {
-            let marcadoresAdicionados = 0;
+        // Adiciona os marcadores de todos os estacionamentos ao carregar o mapa
+        function adicionarMarcadoresEstacionamentosIniciais() {
+            let marcadoresProcessados = 0;
+            const totalEstacionamentos = estacionamentos.length;
+            if (totalEstacionamentos === 0) return;
+
             estacionamentos.forEach(estacionamento => {
                 fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(estacionamento.endereco)}&limit=1`)
                     .then(response => response.json())
@@ -612,12 +657,27 @@
                             const lat = parseFloat(data[0].lat);
                             const lon = parseFloat(data[0].lon);
                             
+                            let botaoAcao;
+                            if (usuarioTemReservaAtiva) {
+                                if (idEstacionamentoReservado === estacionamento.id) {
+                                    botaoAcao = `<form action="{% url 'sair_vaga' %}" method="post" style="margin-top: 8px; text-align:center;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="reserve-btn" style="background-color: #dc3545;" onclick="return confirm('Tem certeza que deseja sair desta vaga?');">
+                                                        <i class="fas fa-times-circle"></i> Sair da Vaga
+                                                    </button>
+                                                 </form>`;
+                                } else {
+                                    botaoAcao = `<button class="reserve-btn" disabled title="Você já possui uma reserva ativa em outro estacionamento.">Reservar</button>`;
+                                }
+                            } else {
+                                botaoAcao = `<button class="reserve-btn" onclick="reservarVaga(${estacionamento.id})" ${estacionamento.vagas_disponiveis === 0 ? 'disabled' : ''}>
+                                                ${estacionamento.vagas_disponiveis === 0 ? 'Lotado' : 'Reservar'}
+                                             </button>`;
+                            }
+
                             const marker = L.marker([lat, lon], {
                                 icon: L.divIcon({
-                                    html: '<i class="fas fa-parking" style="color: #a259d9; font-size: 32px;"></i>' +
-                                          '<div style="display:none;">' + 
-                                          '<div style="background: #a259d9; width: 32px; height: 32px; border-radius: 50%;"></div>' +
-                                          '</div>',
+                                    html: '<i class="fas fa-parking" style="color: #a259d9; font-size: 32px;"></i>',
                                     className: 'parking-icon',
                                     iconSize: [32, 32],
                                     iconAnchor: [16, 32]
@@ -629,27 +689,29 @@
                                 Endereço: ${estacionamento.endereco}<br>
                                 Vagas disponíveis: ${estacionamento.vagas_disponiveis}/${estacionamento.total_vagas}<br>
                                 Preço: R$${estacionamento.preco.toFixed(2)}<br>
-                                <button class="reserve-btn" onclick="reservarVaga(${estacionamento.id})" ${estacionamento.vagas_disponiveis === 0 ? 'disabled' : ''}>
-                                    Reservar
-                                </button>
+                                ${botaoAcao}
                             `);
-                            marcadoresAdicionados++;
                         } else {
-                            console.error(`Endereço não encontrado para o estacionamento: ${estacionamento.endereco}`);
+                            console.warn(`Endereço não encontrado para o estacionamento (carga inicial): ${estacionamento.nome} - ${estacionamento.endereco}`);
                         }
                     })
                     .catch(error => {
-                        console.error(`Erro ao geocodificar ${estacionamento.endereco}:`, error);
+                        console.error(`Erro ao geocodificar ${estacionamento.endereco} (carga inicial):`, error);
                     })
                     .finally(() => {
-                        if (marcadoresAdicionados === 0 && estacionamentos.length > 0) {
-                            console.warn('Nenhum estacionamento foi exibido. Verifique os endereços na tabela myApp_estacionamento.');
+                        marcadoresProcessados++;
+                        if (marcadoresProcessados === totalEstacionamentos) {
+                            console.log("Todos os marcadores de estacionamentos iniciais processados.");
                         }
                     });
             });
         }
 
-        adicionarMarcadoresEstacionamentos();
+        // Carrega os marcadores iniciais assim que o DOM e os dados estiverem prontos
+        document.addEventListener('DOMContentLoaded', () => {
+           adicionarMarcadoresEstacionamentosIniciais();
+        });
+
     </script>
 </body>
 </html>

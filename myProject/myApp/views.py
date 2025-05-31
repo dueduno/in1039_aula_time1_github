@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.decorators import login_required
 from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva
 import random
+from django.db import transaction
+import traceback
 
 @login_required
 def home(request):
@@ -169,7 +171,16 @@ def change_password(request):
 @login_required
 def mapa(request):
     estacionamentos = Estacionamento.objects.all()
-    return render(request, 'mapa.html', {'estacionamentos': estacionamentos})
+    reserva_ativa_do_usuario = None 
+
+    if request.user.is_authenticated:
+        reserva_ativa_do_usuario = Vaga.objects.filter(id_user=request.user).first()
+    
+    context = {
+        'estacionamentos': estacionamentos,
+        'reserva_ativa_do_usuario': reserva_ativa_do_usuario,
+    }
+    return render(request, 'mapa.html', context)
 
 @login_required
 def criar_estacionamento(request):
@@ -225,4 +236,45 @@ def reservar_vaga(request):
             return redirect('mapa')
     
     # Se não for POST, redireciona para o mapa (comportamento original)
+    return redirect('mapa')
+
+
+@login_required
+def sair_da_vaga(request):
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                vaga_a_liberar = Vaga.objects.get(id_user=request.user)
+                estacionamento = vaga_a_liberar.estacionamento
+                
+                # Certifique-se que 'estacionamento' não é None antes de prosseguir
+                if estacionamento is None:
+                    # Isso não deveria acontecer se o ForeignKey Vaga->Estacionamento for NOT NULL
+                    messages.error(request, 'Erro: A vaga não está associada a um estacionamento válido.')
+                    return redirect('mapa')
+
+                estacionamento.vagas_disponiveis += 1
+                estacionamento.save()
+                
+                vaga_a_liberar.delete()
+            
+            messages.success(request, 'Você saiu da vaga com sucesso! Ela agora está disponível para outros usuários.')
+            return redirect('mapa')
+
+        except Vaga.DoesNotExist:
+            messages.error(request, 'Não foi encontrada nenhuma reserva ativa em seu nome para liberar.')
+            return redirect('mapa')
+        except Exception as e:
+            # LINHAS IMPORTANTES PARA DEBUG:
+            print(f"---------------------------------------------------------")
+            print(f"ERRO DETALHADO EM sair_da_vaga:")
+            print(f"Tipo do Erro: {type(e).__name__}")
+            print(f"Mensagem do Erro: {str(e)}")
+            print(f"Traceback Completo:")
+            traceback.print_exc() # Isso imprimirá o traceback completo no console
+            print(f"---------------------------------------------------------")
+            
+            messages.error(request, f'Ocorreu um erro ao tentar sair da vaga. Por favor, tente novamente.')
+            return redirect('mapa')
+    
     return redirect('mapa')
