@@ -28,29 +28,29 @@ def home(request):
         "reserva": reserva,
     }
 
-    return render(request, "home.html", context=context)
+    return render(request, 'home.html', context=context)
 
-@login_required
-def base(request):
-    cliente = Cliente.objects.all()
-    administrador = Administrador.objects.all()
-    estacionamento = Estacionamento.objects.all()
-    possui = Possui.objects.all()
-    vaga = Vaga.objects.all()
-    contem = Contem.objects.all()
-    reserva = Reserva.objects.all()
+# @login_required
+# def base(request):
+#     cliente = Cliente.objects.all()
+#     administrador = Administrador.objects.all()
+#     estacionamento = Estacionamento.objects.all()
+#     possui = Possui.objects.all()
+#     vaga = Vaga.objects.all()
+#     contem = Contem.objects.all()
+#     reserva = Reserva.objects.all()
 
-    context = {
-        "cliente": cliente,
-        "administrador": administrador,
-        "estacionamento": estacionamento,
-        "possui": possui,
-        "vagas": vaga,
-        "contem": contem,
-        "reserva": reserva,
-    }
+#     context = {
+#         "cliente": cliente,
+#         "administrador": administrador,
+#         "estacionamento": estacionamento,
+#         "possui": possui,
+#         "vagas": vaga,
+#         "contem": contem,
+#         "reserva": reserva,
+#     }
 
-    return render(request, "base.html", context=context)
+#     return render(request, "base.html", context=context)
 
 @login_required
 def entrada(request):
