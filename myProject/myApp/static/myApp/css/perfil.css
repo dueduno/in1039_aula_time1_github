@@ -1,149 +1,154 @@
+/* myApp/static/myApp/css/perfil.css */
 * {
-  box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  background-color: #e7d5d5;
-  min-height: 100vh;
-  padding-top: 100px;
-  padding-bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    margin: 0;
+    padding: 0;
+    background-color: #e7d5d5;
+    min-height: 100vh;
+    padding-top: 100px;  /* Espaço para o retangulo-topo */
+    padding-bottom: 100px; /* Espaço para o retangulo-baixo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* Centraliza horizontalmente */
+    justify-content: center; /* Centraliza verticalmente no espaço disponível */
 }
 
 .retangulo-topo, .retangulo-baixo {
-  width: 100%;
-  height: 80px;
-  background-color: #A151E6;
-  position: fixed;
-  left: 0;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  z-index: 10;
+    width: 100%;
+    height: 80px;
+    background-color: #A151E6;
+    position: fixed;
+    left: 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 10;
 }
 
 .retangulo-topo {
-  top: 0;
+    top: 0;
 }
 
 .retangulo-baixo {
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  font-size: 18px;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    font-size: 18px;
 }
 .link-footer {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
 }
 
 .link-footer:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .botao-voltar {
-  position: absolute;
-  top: 15px;
-  left: 20px;
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 30px;
-  font-weight: bold;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 .botao-voltar:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  text-decoration: underline;
+    background-color: rgba(255, 255, 255, 0.3);
+    text-decoration: underline;
 }
 
 /* PERFIL */
-
 .perfil-container {
-  background-color: #f8f8f8;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-  width: 90%;
-  max-width: 500px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+    background-color: #f8f8f8;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 500px; /* Você pode ajustar isso se quiser maior ou menor */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px; /* Adiciona um pouco de espaço do topo, se necessário */
+    margin-bottom: 20px; /* Adiciona um pouco de espaço do rodapé, se necessário */
 }
 
 .foto-perfil {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 .foto-perfil img {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  border: 3px solid #000000;
-  object-fit: cover;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #000000;
+    object-fit: cover;
 }
 
 
 .informacoes-perfil {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .informacoes-perfil label {
-  font-weight: 600;
-  color: #333;
+    font-weight: 600;
+    color: #333;
 }
 
 .informacoes-perfil input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: white;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
 }
 
 .informacoes-perfil input:focus {
-  outline: none;
-  border-color: #A151E6;
-  box-shadow: 0 0 5px rgba(161, 81, 230, 0.5);
+    outline: none;
+    border-color: #A151E6;
+    box-shadow: 0 0 5px rgba(161, 81, 230, 0.5);
 }
 
 .campo {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .botao-editar {
-  background-color: #c7adde;
-  color: #090809;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  width: fit-content;
-  transition: background-color 0.3s, transform 0.2s;
+    background-color: #c7adde;
+    color: #090809;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    width: fit-content; /* Para o botão se ajustar ao texto */
+    align-self: flex-start; /* Alinha o botão à esquerda dentro do .campo se necessário */
+    margin-top: 5px; /* Pequeno espaço acima do botão */
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .botao-editar:hover {
-  background-color: #8e40cc;
-  transform: scale(1.05);
+    background-color: #8e40cc;
+    transform: scale(1.05);
 }
