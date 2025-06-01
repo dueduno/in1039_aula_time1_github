@@ -130,9 +130,15 @@ def login_user(request):
         return render(request, "login.html", context={"error_msg": "Usuário não pode ser autenticado"})
     return render(request, "login.html")
 
+def pagina_perfil(request):
+    return render(request,'perfil.html')
+
 def logout_user(request):
     logout(request)
     return redirect("home")
+
+def botoes(request):
+    return render(request, 'botoes.html')
 
 def esqueci_senha(request):
     return render(request,'esqueci_senha_nova_senha')

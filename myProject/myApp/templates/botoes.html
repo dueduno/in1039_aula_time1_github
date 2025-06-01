@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Menu - VagaCerta</title>
+
+    <link rel="stylesheet" href="{% static 'myApp/css/botoes.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
+</head>
+<body>
+    <div class="retangulo-topo">
+        <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+    </div>
+
+    <div class="menu-container">
+        <div class="menu-titulo">O que você deseja acessar?</div>
+        
+        <div class="menu-botoes">
+            <a href="{% url 'perfil' %}" class="btn-opcao" style="text-decoration: none; color: inherit;">
+                <i class="fas fa-home"></i>Meu perfil
+            </a>
+            
+            <a href="{% url 'criar_estacionamento' %}" class="btn-opcao" style="text-decoration: none; color: inherit;">
+                <i class="fas fa-calendar-alt"></i>Cadastre seu Estacionamento
+            </a>
+            
+            <a href="#" class="btn-opcao" style="text-decoration: none; color: #6c757d; background-color: #f8f9fa; cursor: not-allowed;" title="Funcionalidade em desenvolvimento">
+                <i class="fas fa-car"></i>Meu veículo
+            </a>
+            </div>
+    </div>
+
+    <div class="retangulo-baixo">
+        <button class="link-footer" onclick="window.location.href='#'">Suporte</button>
+        <button class="link-footer" onclick="window.location.href='#'">Termos de Uso</button>
+        <button class="link-footer" onclick="window.location.href='#'">Política de Privacidade</button>
+    </div>
+</body>
+</html>

@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <link href="{% static 'myApp/css/base.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'myApp/css/base.css' %}" rel="stylesheet" type="text/css" />
+    
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
@@ -25,7 +28,7 @@
             <a class="nav-link text-white active" href="{% url 'mapa' %}">Reservar vaga</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'register' %}">Registro</a>
+            <a class="nav-link text-white" href="{% url 'botoes' %}">Recursos Adicionais</a>
           </li>
         </ul>
         

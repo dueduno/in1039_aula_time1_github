@@ -14,4 +14,6 @@ urlpatterns = [
     path('criar_estacionamento/', views.criar_estacionamento, name='criar_estacionamento'),
     path('reservar_vaga/', views.reservar_vaga, name='reservar_vaga'),
     path('sair-vaga/', views.sair_da_vaga, name='sair_vaga'),
+    path('botoes/',views.botoes,name='botoes'),
+    path('perfil/',views.pagina_perfil,name='perfil'),
 ]
