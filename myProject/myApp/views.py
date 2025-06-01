@@ -8,7 +8,7 @@ import random
 from django.db import transaction
 import traceback
 
-@login_required
+#@login_required
 def home(request):
     cliente = Cliente.objects.all()
     administrador = Administrador.objects.all()
@@ -132,7 +132,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect("login")
+    return redirect("home")
 
 def esqueci_senha(request):
     return render(request,'esqueci_senha_nova_senha')
