@@ -16,4 +16,5 @@ urlpatterns = [
     path('sair-vaga/', views.sair_da_vaga, name='sair_vaga'),
     path('botoes/',views.botoes,name='botoes'),
     path('perfil/',views.pagina_perfil,name='perfil'),
+    path('politica_privacidade/',views.politica_privacidade,name='politica_privacidade'),
 ]

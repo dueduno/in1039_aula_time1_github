@@ -74,6 +74,9 @@ def entrada(request):
 
     return render(request, "entrada.html", context=context)
 
+
+
+
 def create_user(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -284,3 +287,7 @@ def sair_da_vaga(request):
             return redirect('mapa')
     
     return redirect('mapa')
+
+
+def politica_privacidade(request):
+    return render(request,'politica_privacidade.html')
