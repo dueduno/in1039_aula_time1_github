@@ -1,0 +1,31 @@
+{% load static %}  <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Suporte - VagaCerta</title> <link rel="stylesheet" href="{% static 'myApp/css/suporte.css' %}" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="retangulo-topo">
+        <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+        <h1 style="text-align: center; color: #ffffff; font-size: 40px;">
+            Suporte
+        </h1>
+    </div>
+
+    <div class="conteudo">
+        <h2><u>Precisa de ajuda?</u></h2><br><br><br>
+        <p><span class="destaque">Email:</span> <span style="color: #0d56dd;"><u>suporte@vagacerta.com</u></span></p><br>
+        <p><span class="destaque">Telefone:</span> (21) 9999-9999</p><br>
+        <p><span class="destaque">WhatsApp:</span> (21) 91234-5678</p><br>
+        <p><span class="destaque">Atendimento:</span> Segunda a sexta, das 9:00 às 18:00</p>
+    </div>
+
+    <div class="retangulo-baixo"></div>
+    
+</body>
+</html>

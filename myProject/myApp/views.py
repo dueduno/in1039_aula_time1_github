@@ -294,3 +294,6 @@ def politica_privacidade(request):
 
 def termos_de_uso(request):
     return render(request,'termos_de_uso.html')
+
+def suporte(request):
+    return render(request,'suporte.html')
