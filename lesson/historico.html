@@ -5,6 +5,7 @@
   <title>Histórico</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <style>
     body, html {
       margin: 0;
@@ -102,7 +103,7 @@
       height: 30px;
       width: 30px;
       margin-bottom: 5px;
-      background-color: #d4b3f5;
+      background-color: #b049c5;
       border: none;
       cursor: pointer;
     }
@@ -110,7 +111,14 @@
     .abas-scroll {
       display: flex;
       overflow-x: auto;
-      gap: 5px;
+      gap: 10px;
+    }
+    .btn-group .btn {
+      font-size: 15px; /* Tamanho de fonte menor */
+      padding: 5px 10px; /* Menos padding */
+      width: auto; /* A largura se ajusta automaticamente ao conteúdo */
+      height: auto; /* Ajusta a altura para o conteúdo */
+      margin: 0 10px; /* Margem entre as abas */
     }
 
     .aba {
@@ -147,6 +155,26 @@
       cursor: pointer;
       color: red;
     }
+    /*
+    .vaga {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background-color: #f8f9fa;
+    }
+    */
+    .vaga-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .vaga-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      padding: 16px;
+    }
   </style>
 </head>
 <body>
@@ -169,18 +197,27 @@
           <button class="btn-controle">🗑️</button>
         </div>
         <div class="abas-scroll">
-          <button class="aba">Há 2h</button>
-          <button class="aba">Há 8h</button>
-          <button class="aba">Hoje</button>
-          <button class="aba">Ontem</button>
-          <button class="aba">Últimos 7 dias</button>
-          <button class="aba">Últimos 30 dias</button>
-          <button class="aba">Este mês</button>
-          <button class="aba">MêsTal</button>
-          <button class="aba">Último ano</button>
-          <button class="aba">Mais de 6 meses</button>
-          <button class="aba">Favoritos</button>
-          <button class="aba">Personalizado...</button>
+          <!-- https://getbootstrap.com.br/docs/4.1/components/buttons/ -->
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary">
+              <input type="radio" name="tabs" id="tab3" autocomplete="off"> Hoje
+            </label>
+            <label class="btn btn-secondary">
+              <input type="radio" name="tabs" id="tab4" autocomplete="off"> Ontem
+            </label>
+            <label class="btn btn-secondary">
+              <input type="radio" name="tabs" id="tab5" autocomplete="off"> Esta Semana
+            </label>
+            <label class="btn btn-secondary">
+              <input type="radio" name="tabs" id="tab7" autocomplete="off"> Este Mês
+            </label>
+            <label class="btn btn-secondary">
+              <input type="radio" name="tabs" id="tab8" autocomplete="off"> Últimos 6 meses
+            </label>
+            <label class="btn btn-secondary">
+              <input type="radio" name="tabs" id="tab9" autocomplete="off"> Mais de 6 meses
+            </label>
+          </div>
         </div>
       </div>
 
@@ -191,20 +228,60 @@
         </div>
       </div>
 
-      <!-- mensagem para se nao possuir historico -->
+      <!-- mensagem para se nao possuir historico
       <div id="mensagem-vazia" class="alert alert-info text-center d-none">
-        Você ainda não possui histórico.
+        Você ainda não possui histórico. -->
       </div>
 
-      <!-- cada item do historico 
-      <div class="item-endereco">
-        <button class="btn-excluir" onclick="abrirModal(this)">🗑️</button>
-        <p><strong>Data:</strong> 01/01/2024 12:00h</p>
-        <p><strong>Nome:</strong> Parque da Cidade</p>
-        <p><strong>Endereço:</strong> Av. das Flores, 123</p>
-        <p><strong>Anotação:</strong> Ideal para caminhada.</p>
-      -->
-      </div>
+      <!-- cada item do historico -->
+      <div class="vaga-grid">
+        <!-- Vaga 1 -->
+        <div class="vaga">
+            <div class="accordion" id="vagaAccordion1">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne1">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1" onclick="mostrarEndereco(0)">
+                            Av. Paulista, São Paulo
+                        </button>
+                    </h2>
+                    <div id="collapseOne1" class="accordion-collapse collapse show" aria-labelledby="headingOne1" data-bs-parent="#vagaAccordion1">
+                        <div class="accordion-body">
+                            <p><strong>Tempo na Vaga:</strong> 1h 20min</p>
+                            <p><strong>Tipo:</strong> Carro</p>
+                            <p><strong>Tempo previsto:</strong> 2h</p>
+                            <p><strong>Entrada:</strong> 10:15h</p>
+                            <p><strong>Localização:</strong> A1</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vaga 2 -->
+        <div class="vaga">
+            <div class="accordion" id="vagaAccordion2">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne2">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne2" aria-expanded="true" aria-controls="collapseOne2" onclick="mostrarEndereco(1)">
+                            Rua Siqueira Campos, Rio de janeiro
+                        </button>
+                    </h2>
+                    <div id="collapseOne2" class="accordion-collapse collapse show" aria-labelledby="headingOne2" data-bs-parent="#vagaAccordion2">
+                        <div class="accordion-body">
+                            <p><strong>Tempo na Vaga:</strong> 45min</p>
+                            <p><strong>Tipo:</strong> Moto</p>
+                            <p><strong>Tempo previsto:</strong> 1h 30min</p>
+                            <p><strong>Entrada:</strong> 11:00h</p>
+                            <p><strong>Localização:</strong> B2</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vaga 3 -->
+        <div class="vaga">
+            <div class="accordion" id="vagaAccordion3">
 
     </section>
 
@@ -236,11 +313,29 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // mapa
-    var mapa = L.map('mapa').setView([-15.7942, -47.8822], 13);
+    var mapa = L.map('mapa').setView([-23.55052, -46.633308], 5); // Brasil
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data © OpenStreetMap contributors'
+      attribution: '© OpenStreetMap contributors'
     }).addTo(mapa);
-    L.marker([-15.7942, -47.8822]).addTo(mapa).bindPopup("Parque da Cidade").openPopup();
+
+    // Coordenadas dos endereços
+    var locais = [
+      { nome: "Parada Certa", coords: [-23.561684, -46.655981] },
+      { nome: "WGM Estacionamento", coords: [-22.968432, -43.185172] }
+    ];
+
+    var marcador = null;
+
+    function mostrarEndereco(indice) {
+      var local = locais[indice];
+      if (marcador) {
+        mapa.removeLayer(marcador);
+      }
+      marcador = L.marker(local.coords).addTo(mapa)
+        .bindPopup(local.nome)
+        .openPopup();
+      mapa.setView(local.coords, 15);
+    }
 
     // mostra mensagem caso nao tenha itens no historico
     function verificarHistorico() {
