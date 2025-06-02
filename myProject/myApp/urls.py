@@ -17,4 +17,5 @@ urlpatterns = [
     path('botoes/',views.botoes,name='botoes'),
     path('perfil/',views.pagina_perfil,name='perfil'),
     path('politica_privacidade/',views.politica_privacidade,name='politica_privacidade'),
+    path('termos-de-uso/', views.termos_de_uso, name='termos_de_uso'),
 ]

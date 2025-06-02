@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR"> <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Termos de Uso - VagaCerta</title> <link rel="stylesheet" href="{% static 'myApp/css/termos_de_uso.css' %}" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+    <div class="retangulo-topo">
+        <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+        <h1 style="text-align: center; color: #ffffff; font-size: 40px;">
+            Termos de Uso
+        </h1>
+    </div>
+    
+    <div class="intro-text">
+        <p>
+            Ao utilizar o site VagaCerta, você concorda com os presentes Termos de Uso, que regem a utilização da plataforma e dos serviços oferecidos. O uso da plataforma também implica na aceitação da nossa 
+            <a href="{% url 'politica_privacidade' %}">Política de Privacidade</a>. 
+            Abaixo seguem as condições de uso:
+        </p>
+    </div>
+    
+    <div class="conteudo-termos">
+        <section class="policy-section">
+            <h2 class="subtitle">1. Objetivo da Plataforma</h2>
+            <p>
+            O VagaCerta é um site que permite ao usuário visualizar vagas de veículos disponíveis em locais públicos ou privados, como vagas em ruas, avenidas, estacionamentos privados, entre outros. A plataforma facilita o acesso à informação sobre vagas disponíveis, mas não realiza intermediação direta entre motorista e organizações, sendo de total responsabilidade a veracidade de informações compartilhadas por tal organizações, organização de vagas, cobranças ou garantias que incorrerem.
+            </p>
+        </section>
+
+        <section class="policy-section">
+            <h2 class="subtitle">2. Cadastro e Responsabilidades</h2>
+            <p>
+            Algumas funcionalidades do site podem exigir que o usuário forneça dados pessoais. Ao se cadastrar, o usuário se compromete a fornecer informações verdadeiras, manter seus dados atualizados e zelar pela segurança de seu acesso à plataforma.
+            </p>
+        </section>
+
+        <section class="policy-section">
+            <h2 class="subtitle">3. Uso das Informações</h2>
+            <p>
+            As informações sobre vagas disponíveis são exibidas de acordo com dados públicos, instituições ou fontes consideradas confiáveis. Apesar de todo esforço, o VagaCerta não garante a disponibilidade contínua ou atualizada de todas as vagas listadas, cabendo ao usuário confirmar os detalhes diretamente com a instituição ofertante.
+            </p>
+        </section>
+
+        <section class="policy-section">
+            <h2 class="subtitle">4. Condutas Proibidas</h2>
+            <p>
+            O usuário não deve utilizar o VagaCerta para fins ilícitos, para promover conteúdo ofensivo ou enganoso, nem para violar os direitos de terceiros. Qualquer uso indevido poderá resultar na suspensão ou exclusão do acesso à plataforma.
+            </p>
+        </section>
+
+        <section class="policy-section">
+            <h2 class="subtitle">5. Propriedade Intelectual</h2>
+            <p>
+            O conteúdo disponibilizado na plataforma, incluindo textos, marcas, logotipos, layout e funcionalidades, é protegido por direitos autorais e não podem ser reproduzido sem autorização.
+            </p>
+        </section>
+
+        <section class="policy-section">
+            <h2 class="subtitle">6. Limitação de Responsabilidade</h2>
+            <p>
+            O VagaCerta não realiza intermediação de contratação de serviço nem garante a veracidade das informações fornecidas por terceiros. A responsabilidade pela vaga, requisitos, prazos e processos é exclusiva da instituição que a divulgou.
+            </p>
+        </section>
+
+        <section class="policy-section">
+            <h2 class="subtitle">7. Atualizações dos Termos</h2>
+            <p>
+            Este Termo de Uso poderá ser alterado a qualquer momento, sendo responsabilidade do usuário consultá-lo periodicamente para estar ciente das modificações.
+            </p>
+        </section>
+
+        <section class="policy-section">
+            <h2 class="subtitle">8. Legislação Aplicável</h2>
+            <p>
+            Este Termo é regido pelas leis da República Federativa do Brasil. Em caso de controvérsias, fica eleito o foro da comarca de Rio de Janeiro/RJ, salvo disposição legal em contrário.
+            </p>
+        </section>
+    </div>
+</body>
+</html>

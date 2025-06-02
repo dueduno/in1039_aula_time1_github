@@ -291,3 +291,6 @@ def sair_da_vaga(request):
 
 def politica_privacidade(request):
     return render(request,'politica_privacidade.html')
+
+def termos_de_uso(request):
+    return render(request,'termos_de_uso.html')
