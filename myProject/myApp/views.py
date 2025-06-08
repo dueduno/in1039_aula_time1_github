@@ -8,7 +8,7 @@ import random
 from django.db import transaction
 import traceback
 
-@login_required
+#@login_required
 def home(request):
     cliente = Cliente.objects.all()
     administrador = Administrador.objects.all()
@@ -28,29 +28,29 @@ def home(request):
         "reserva": reserva,
     }
 
-    return render(request, "home.html", context=context)
+    return render(request, 'home.html', context=context)
 
-@login_required
-def base(request):
-    cliente = Cliente.objects.all()
-    administrador = Administrador.objects.all()
-    estacionamento = Estacionamento.objects.all()
-    possui = Possui.objects.all()
-    vaga = Vaga.objects.all()
-    contem = Contem.objects.all()
-    reserva = Reserva.objects.all()
+# @login_required
+# def base(request):
+#     cliente = Cliente.objects.all()
+#     administrador = Administrador.objects.all()
+#     estacionamento = Estacionamento.objects.all()
+#     possui = Possui.objects.all()
+#     vaga = Vaga.objects.all()
+#     contem = Contem.objects.all()
+#     reserva = Reserva.objects.all()
 
-    context = {
-        "cliente": cliente,
-        "administrador": administrador,
-        "estacionamento": estacionamento,
-        "possui": possui,
-        "vagas": vaga,
-        "contem": contem,
-        "reserva": reserva,
-    }
+#     context = {
+#         "cliente": cliente,
+#         "administrador": administrador,
+#         "estacionamento": estacionamento,
+#         "possui": possui,
+#         "vagas": vaga,
+#         "contem": contem,
+#         "reserva": reserva,
+#     }
 
-    return render(request, "base.html", context=context)
+#     return render(request, "base.html", context=context)
 
 @login_required
 def entrada(request):
@@ -73,6 +73,9 @@ def entrada(request):
     }
 
     return render(request, "entrada.html", context=context)
+
+
+
 
 def create_user(request):
     if request.method == "POST":
@@ -130,9 +133,15 @@ def login_user(request):
         return render(request, "login.html", context={"error_msg": "Usuário não pode ser autenticado"})
     return render(request, "login.html")
 
+def pagina_perfil(request):
+    return render(request,'perfil.html')
+
 def logout_user(request):
     logout(request)
-    return redirect("login")
+    return redirect("home")
+
+def botoes(request):
+    return render(request, 'botoes.html')
 
 def esqueci_senha(request):
     return render(request,'esqueci_senha_nova_senha')
@@ -278,3 +287,13 @@ def sair_da_vaga(request):
             return redirect('mapa')
     
     return redirect('mapa')
+
+
+def politica_privacidade(request):
+    return render(request,'politica_privacidade.html')
+
+def termos_de_uso(request):
+    return render(request,'termos_de_uso.html')
+
+def suporte(request):
+    return render(request,'suporte.html')
