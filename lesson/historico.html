@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Histórico</title>
+  <title>Histórico com Accordion e Mapa</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -106,6 +106,9 @@
       background-color: #b049c5;
       border: none;
       cursor: pointer;
+      color: white;
+      font-size: 18px;
+      border-radius: 4px;
     }
 
     .abas-scroll {
@@ -113,20 +116,31 @@
       overflow-x: auto;
       gap: 10px;
     }
+
     .btn-group .btn {
-      font-size: 15px; /* Tamanho de fonte menor */
-      padding: 5px 10px; /* Menos padding */
-      width: auto; /* A largura se ajusta automaticamente ao conteúdo */
-      height: auto; /* Ajusta a altura para o conteúdo */
-      margin: 0 10px; /* Margem entre as abas */
+      font-size: 15px;
+      padding: 5px 10px;
+      width: auto;
+      height: auto;
+      margin: 0 10px;
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: white;
+      color: #5a2d82;
+      transition: background-color 0.3s, color 0.3s;
     }
 
-    .aba {
-      background-color: #eee;
-      border: 1px solid #ccc;
-      padding: 5px 10px;
-      white-space: nowrap;
-      cursor: pointer;
+    .btn-group .btn:hover {
+      background-color: #A151E6;
+      color: white;
+    }
+
+    .btn-group .btn.active {
+      background-color: #A151E6;
+      color: white;
+      font-weight: bold;
     }
 
     .lugares-topo {
@@ -137,43 +151,31 @@
       margin-bottom: 10px;
     }
 
-    .item-endereco {
-      background: #f0f0f0;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-left: 5px solid #A151E6;
-      position: relative;
-    }
-
     .btn-excluir {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: transparent;
-      border: none;
+      background-color: white;
+      border: 1px solid #ccc;
       font-size: 18px;
       cursor: pointer;
       color: red;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      line-height: 26px;
+      text-align: center;
+      padding: 0;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
     }
-    /*
-    .vaga {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
+
+    /* Accordion custom padding */
+    .accordion-button {
+      font-weight: bold;
+      color: #5a2d82;
+    }
+    .accordion-body {
       background-color: #f8f9fa;
-    }
-    */
-    .vaga-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .vaga-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-      padding: 16px;
     }
   </style>
 </head>
@@ -194,29 +196,16 @@
     <section class="lado-esquerdo">
       <div class="linha-abas">
         <div class="controle-abas">
-          <button class="btn-controle">🗑️</button>
+          <button class="btn-controle" title="Limpar filtro" id="btnLimparFiltro">🗑️</button>
         </div>
         <div class="abas-scroll">
-          <!-- https://getbootstrap.com.br/docs/4.1/components/buttons/ -->
-          <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-secondary">
-              <input type="radio" name="tabs" id="tab3" autocomplete="off"> Hoje
-            </label>
-            <label class="btn btn-secondary">
-              <input type="radio" name="tabs" id="tab4" autocomplete="off"> Ontem
-            </label>
-            <label class="btn btn-secondary">
-              <input type="radio" name="tabs" id="tab5" autocomplete="off"> Esta Semana
-            </label>
-            <label class="btn btn-secondary">
-              <input type="radio" name="tabs" id="tab7" autocomplete="off"> Este Mês
-            </label>
-            <label class="btn btn-secondary">
-              <input type="radio" name="tabs" id="tab8" autocomplete="off"> Últimos 6 meses
-            </label>
-            <label class="btn btn-secondary">
-              <input type="radio" name="tabs" id="tab9" autocomplete="off"> Mais de 6 meses
-            </label>
+          <div class="btn-group btn-group-toggle" data-toggle="buttons" id="filtro-tempo">
+            <label class="btn" data-filter="hoje"><input type="radio" name="tabs" hidden> Hoje</label>
+            <label class="btn" data-filter="ontem"><input type="radio" name="tabs" hidden> Ontem</label>
+            <label class="btn" data-filter="estaSemana"><input type="radio" name="tabs" hidden> Esta Semana</label>
+            <label class="btn" data-filter="esteMes"><input type="radio" name="tabs" hidden> Este Mês</label>
+            <label class="btn" data-filter="ultimos6Meses"><input type="radio" name="tabs" hidden> Últimos 6 meses</label>
+            <label class="btn" data-filter="mais6Meses"><input type="radio" name="tabs" hidden> Mais de 6 meses</label>
           </div>
         </div>
       </div>
@@ -224,65 +213,17 @@
       <div class="lugares-topo">
         <span>Lugares:</span>
         <div class="controle-lugares">
-          <button class="btn-controle">🗑️</button>
+          <button class="btn-controle" title="Limpar lugares" id="btnLimparLugar">🗑️</button>
         </div>
       </div>
 
-      <!-- mensagem para se nao possuir historico
       <div id="mensagem-vazia" class="alert alert-info text-center d-none">
-        Você ainda não possui histórico. -->
+        Você ainda não possui histórico.
       </div>
 
-      <!-- cada item do historico -->
-      <div class="vaga-grid">
-        <!-- Vaga 1 -->
-        <div class="vaga">
-            <div class="accordion" id="vagaAccordion1">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne1">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1" onclick="mostrarEndereco(0)">
-                            Av. Paulista, São Paulo
-                        </button>
-                    </h2>
-                    <div id="collapseOne1" class="accordion-collapse collapse show" aria-labelledby="headingOne1" data-bs-parent="#vagaAccordion1">
-                        <div class="accordion-body">
-                            <p><strong>Tempo na Vaga:</strong> 1h 20min</p>
-                            <p><strong>Tipo:</strong> Carro</p>
-                            <p><strong>Tempo previsto:</strong> 2h</p>
-                            <p><strong>Entrada:</strong> 10:15h</p>
-                            <p><strong>Localização:</strong> A1</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Vaga 2 -->
-        <div class="vaga">
-            <div class="accordion" id="vagaAccordion2">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne2">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne2" aria-expanded="true" aria-controls="collapseOne2" onclick="mostrarEndereco(1)">
-                            Rua Siqueira Campos, Rio de janeiro
-                        </button>
-                    </h2>
-                    <div id="collapseOne2" class="accordion-collapse collapse show" aria-labelledby="headingOne2" data-bs-parent="#vagaAccordion2">
-                        <div class="accordion-body">
-                            <p><strong>Tempo na Vaga:</strong> 45min</p>
-                            <p><strong>Tipo:</strong> Moto</p>
-                            <p><strong>Tempo previsto:</strong> 1h 30min</p>
-                            <p><strong>Entrada:</strong> 11:00h</p>
-                            <p><strong>Localização:</strong> B2</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Vaga 3 -->
-        <div class="vaga">
-            <div class="accordion" id="vagaAccordion3">
-
+      <div class="accordion" id="accordionVagas">
+        <!-- Accordion Items inseridos aqui pelo JS -->
+      </div>
     </section>
 
     <section class="lado-direito">
@@ -290,7 +231,6 @@
     </section>
   </main>
 
-  <!-- modal do boostrap para confirmação para deletar item do historico -->
   <div class="modal fade" id="modalConfirmarExclusao" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -309,57 +249,248 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // mapa
-    var mapa = L.map('mapa').setView([-23.55052, -46.633308], 5); // Brasil
+    // Inicialização do mapa Leaflet
+    const mapa = L.map('mapa').setView([-23.55052, -46.633308], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(mapa);
 
-    // Coordenadas dos endereços
-    var locais = [
-      { nome: "Parada Certa", coords: [-23.561684, -46.655981] },
-      { nome: "WGM Estacionamento", coords: [-22.968432, -43.185172] }
+    let marcador = null;
+
+    // Dados dos estacionamentos
+    let locais = [
+      {
+        nome: "Av. Paulista, São Paulo",
+        coords: [-23.561684, -46.655981],
+        tempoVaga: "1h 20min",
+        tipo: "Carro",
+        tempoPrevisto: "2h",
+        entrada: "10:15h",
+        localizacao: "A1",
+        data: new Date() // Hoje
+      },
+      {
+        nome: "Rua Siqueira Campos, Rio de Janeiro",
+        coords: [-22.968432, -43.185172],
+        tempoVaga: "45min",
+        tipo: "Moto",
+        tempoPrevisto: "1h 30min",
+        entrada: "11:00h",
+        localizacao: "B2",
+        data: new Date(new Date().setDate(new Date().getDate() - 1)) // Ontem
+      },
+      {
+        nome: "Estacionamento Centro", 
+        coords: [-23.55052, -46.633308],
+        tempoVaga: "2h",
+        tipo: "Carro",
+        tempoPrevisto: "3h",
+        entrada: "09:00h",
+        localizacao: "C3",
+        data: new Date(new Date().setDate(new Date().getDate() - 3)) // 3 dias atrás (Esta Semana)
+      },
+      {
+        nome: "Estacionamento Shopping", 
+        coords: [-23.564, -46.647],
+        tempoVaga: "30min",
+        tipo: "Carro",
+        tempoPrevisto: "1h",
+        entrada: "14:30h",
+        localizacao: "D4",
+        data: new Date(new Date().setDate(new Date().getDate() - 20)) // 20 dias atrás (Este mês)
+      },
+      {
+        nome: "Estacionamento Antigo", 
+        coords: [-23.555, -46.640],
+        tempoVaga: "3h",
+        tipo: "Carro",
+        tempoPrevisto: "4h",
+        entrada: "08:00h",
+        localizacao: "E5",
+        data: new Date(new Date().setMonth(new Date().getMonth() - 5)) // 5 meses atrás
+      },
+      {
+        nome: "Estacionamento Velho", 
+        coords: [-23.560, -46.635],
+        tempoVaga: "1h",
+        tipo: "Carro",
+        tempoPrevisto: "2h",
+        entrada: "10:00h",
+        localizacao: "F6",
+        data: new Date(new Date().setMonth(new Date().getMonth() - 7)) // 7 meses atrás
+      }
     ];
 
-    var marcador = null;
+    // Variável para armazenar itens exibidos (depois do filtro)
+    let itensExibidos = [...locais];
 
-    function mostrarEndereco(indice) {
-      var local = locais[indice];
-      if (marcador) {
-        mapa.removeLayer(marcador);
-      }
-      marcador = L.marker(local.coords).addTo(mapa)
-        .bindPopup(local.nome)
-        .openPopup();
-      mapa.setView(local.coords, 15);
+    // Guarda o índice do item para exclusão
+    let indiceParaExcluir = null;
+
+    const accordionVagas = document.getElementById("accordionVagas");
+    const mensagemVazia = document.getElementById("mensagem-vazia");
+
+    // Modal bootstrap
+    const modalExclusao = new bootstrap.Modal(document.getElementById('modalConfirmarExclusao'));
+    const btnConfirmarExclusao = document.getElementById('confirmarExclusao');
+
+    // Função para formatar data para exibição simples
+    function formatarData(data) {
+      const opcoes = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      return data.toLocaleDateString('pt-BR', opcoes);
     }
 
-    // mostra mensagem caso nao tenha itens no historico
-    function verificarHistorico() {
-      const itens = document.querySelectorAll('.item-endereco');
-      const mensagem = document.getElementById('mensagem-vazia');
-      if (!itens.length) {
-        mensagem.classList.remove('d-none');
+    // Função para filtrar por tempo
+    function filtrarPorTempo(tipoFiltro) {
+      const agora = new Date();
+      return locais.filter(item => {
+        const dataItem = new Date(item.data);
+        switch (tipoFiltro) {
+          case 'hoje':
+            return dataItem.toDateString() === agora.toDateString();
+          case 'ontem':
+            const ontem = new Date();
+            ontem.setDate(agora.getDate() - 1);
+            return dataItem.toDateString() === ontem.toDateString();
+          case 'estaSemana':
+            const primeiroDiaSemana = new Date(agora);
+            primeiroDiaSemana.setDate(agora.getDate() - agora.getDay() + 1); // Segunda feira da semana
+            const ultimoDiaSemana = new Date(primeiroDiaSemana);
+            ultimoDiaSemana.setDate(primeiroDiaSemana.getDate() + 6);
+            return dataItem >= primeiroDiaSemana && dataItem <= ultimoDiaSemana;
+          case 'esteMes':
+            return dataItem.getMonth() === agora.getMonth() && dataItem.getFullYear() === agora.getFullYear();
+          case 'ultimos6Meses':
+            const seisMesesAtras = new Date();
+            seisMesesAtras.setMonth(agora.getMonth() - 6);
+            return dataItem >= seisMesesAtras && dataItem <= agora;
+          case 'mais6Meses':
+            const seisMesesAtrasMais = new Date();
+            seisMesesAtrasMais.setMonth(agora.getMonth() - 6);
+            return dataItem < seisMesesAtrasMais;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Função para limpar filtro
+    function limparFiltro() {
+      itensExibidos = [...locais];
+      atualizarLista();
+      desmarcarFiltros();
+    }
+
+    // Atualizar lista exibida no HTML com accordion
+    function atualizarLista() {
+      accordionVagas.innerHTML = "";
+      if (itensExibidos.length === 0) {
+        mensagemVazia.classList.remove("d-none");
+      } else {
+        mensagemVazia.classList.add("d-none");
+
+        itensExibidos.forEach((item, index) => {
+          const idAccordion = `vagaAccordion${index}`;
+          const idCollapse = `collapse${index}`;
+
+          // Accordion item
+          const itemHTML = document.createElement("div");
+          itemHTML.classList.add("accordion-item");
+          itemHTML.style.position = "relative";
+
+          // Botão excluir
+          const btnExcluir = document.createElement("button");
+          btnExcluir.textContent = "×";
+          btnExcluir.title = "Excluir item";
+          btnExcluir.classList.add("btn-excluir");
+          btnExcluir.onclick = e => {
+            e.stopPropagation(); // Para não abrir accordion ao clicar no excluir
+            indiceParaExcluir = locais.indexOf(item);
+            modalExclusao.show();
+          };
+
+          // Monta o HTML do accordion item
+          itemHTML.innerHTML = `
+            <h2 class="accordion-header" id="heading${index}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${idCollapse}" aria-expanded="false" aria-controls="${idCollapse}">
+                ${item.nome} - ${formatarData(item.data)}
+              </button>
+            </h2>
+            <div id="${idCollapse}" class="accordion-collapse collapse" aria-labelledby="heading${index}" data-bs-parent="#accordionVagas">
+              <div class="accordion-body">
+                <div><b>Tempo de vaga:</b> ${item.tempoVaga}</div>
+                <div><b>Tipo:</b> ${item.tipo}</div>
+                <div><b>Tempo previsto:</b> ${item.tempoPrevisto}</div>
+                <div><b>Entrada:</b> ${item.entrada}</div>
+                <div><b>Localização:</b> ${item.localizacao}</div>
+              </div>
+            </div>
+          `;
+
+          itemHTML.appendChild(btnExcluir);
+          accordionVagas.appendChild(itemHTML);
+
+          // Quando abrir accordion, centraliza o mapa e mostra marcador
+          const collapseEl = itemHTML.querySelector(`#${idCollapse}`);
+          collapseEl.addEventListener('show.bs.collapse', () => {
+            if (marcador) {
+              mapa.removeLayer(marcador);
+            }
+            marcador = L.marker(item.coords).addTo(mapa);
+            mapa.setView(item.coords, 15);
+          });
+          // Quando fechar, remove marcador
+          collapseEl.addEventListener('hide.bs.collapse', () => {
+            if (marcador) {
+              mapa.removeLayer(marcador);
+              marcador = null;
+            }
+          });
+        });
       }
     }
-    let itemParaExcluir = null;
-    function abrirModal(botao) {
-      itemParaExcluir = botao.closest('.item-endereco');
-      const modal = new bootstrap.Modal(document.getElementById('modalConfirmarExclusao'));
-      modal.show();
-    }
-    document.getElementById('confirmarExclusao').addEventListener('click', () => {
-      if (itemParaExcluir) {
-        itemParaExcluir.remove();
-        itemParaExcluir = null;
-        bootstrap.Modal.getInstance(document.getElementById('modalConfirmarExclusao')).hide();
-        verificarHistorico();
+
+    // Evento do botão confirmar exclusão
+    btnConfirmarExclusao.addEventListener("click", () => {
+      if (indiceParaExcluir !== null && indiceParaExcluir >= 0) {
+        locais.splice(indiceParaExcluir, 1);
+        itensExibidos = itensExibidos.filter(item => locais.includes(item));
+        atualizarLista();
+        modalExclusao.hide();
+        indiceParaExcluir = null;
       }
     });
-    verificarHistorico();
+
+    // Gerenciar filtros de tempo
+    const filtroTempoContainer = document.getElementById("filtro-tempo");
+    filtroTempoContainer.addEventListener("click", e => {
+      if (e.target.classList.contains("btn")) {
+        // Marcar botão ativo e remover dos outros
+        [...filtroTempoContainer.children].forEach(btn => btn.classList.remove("active"));
+        e.target.classList.add("active");
+
+        const filtroSelecionado = e.target.dataset.filter;
+        itensExibidos = filtrarPorTempo(filtroSelecionado);
+        atualizarLista();
+      }
+    });
+
+    // Botão limpar filtro tempo
+    const btnLimparFiltro = document.getElementById("btnLimparFiltro");
+    btnLimparFiltro.addEventListener("click", () => {
+      limparFiltro();
+    });
+
+    // Função para desmarcar filtros visuais
+    function desmarcarFiltros() {
+      [...filtroTempoContainer.children].forEach(btn => btn.classList.remove("active"));
+    }
+
+    // Inicializa a lista e mapa
+    atualizarLista();
   </script>
+
 </body>
 </html>
