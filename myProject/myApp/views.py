@@ -1,12 +1,18 @@
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva
 import random
-from django.db import transaction
 import traceback
+from django.db import transaction 
+from django.shortcuts import redirect, render # Adicionado render para funções existentes
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone 
+
+# Importe seus modelos. Ajuste os caminhos conforme a estrutura do seu projeto.
+from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva, Historico
+from django.contrib.auth.models import User 
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash # Adicionado para as funções de autenticação
+
+# Funções existentes (home, entrada, create_user, login_user, etc.)
+# Mantenha as funções abaixo exatamente como no seu código original.
 
 #@login_required
 def home(request):
@@ -29,28 +35,6 @@ def home(request):
     }
 
     return render(request, 'home.html', context=context)
-
-# @login_required
-# def base(request):
-#     cliente = Cliente.objects.all()
-#     administrador = Administrador.objects.all()
-#     estacionamento = Estacionamento.objects.all()
-#     possui = Possui.objects.all()
-#     vaga = Vaga.objects.all()
-#     contem = Contem.objects.all()
-#     reserva = Reserva.objects.all()
-
-#     context = {
-#         "cliente": cliente,
-#         "administrador": administrador,
-#         "estacionamento": estacionamento,
-#         "possui": possui,
-#         "vagas": vaga,
-#         "contem": contem,
-#         "reserva": reserva,
-#     }
-
-#     return render(request, "base.html", context=context)
 
 @login_required
 def entrada(request):
@@ -182,8 +166,9 @@ def mapa(request):
     estacionamentos = Estacionamento.objects.all()
     reserva_ativa_do_usuario = None 
 
+    # Buscar apenas vagas ativas para o usuário
     if request.user.is_authenticated:
-        reserva_ativa_do_usuario = Vaga.objects.filter(id_user=request.user).first()
+        reserva_ativa_do_usuario = Vaga.objects.filter(id_user=request.user, active=True).first()
     
     context = {
         'estacionamentos': estacionamentos,
@@ -209,62 +194,104 @@ def criar_estacionamento(request):
     
     return render(request, 'criar_estacionamento.html')
 
-@login_required
 def reservar_vaga(request):
+    """
+    Função para reservar uma vaga em um estacionamento.
+    Cria um novo registro de Vaga (representando a ocupação atual).
+    """
     if request.method == 'POST':
         try:
             estacionamento_id = request.POST.get('estacionamento_id')
-            estacionamento = Estacionamento.objects.get(id=estacionamento_id)
             
-            # Verificar se há vagas disponíveis
+            # Bloqueia a linha do estacionamento para evitar condições de corrida em ambientes multi-usuário.
+            estacionamento = Estacionamento.objects.select_for_update().get(id=estacionamento_id)
+            
+            # --- Validação: Verificar se o usuário já possui uma vaga ativa (ocupada) ---
+            if Vaga.objects.filter(id_user=request.user, active=True).exists():
+                messages.error(request, 'Você já possui uma vaga ativa. Por favor, saia dela antes de reservar outra.')
+                return redirect('mapa')
+
+            # Verificar se há vagas disponíveis no estacionamento (contador geral)
             if estacionamento.vagas_disponiveis <= 0:
                 messages.error(request, 'Nenhuma vaga disponível neste estacionamento.')
-                return redirect('mapa') 
+                return redirect('mapa')
             
-            # Decrementar vagas disponíveis
+            # Decrementar vagas disponíveis no estacionamento
             estacionamento.vagas_disponiveis -= 1
             estacionamento.save()
             
-            # Gerar um código aleatório para a vaga
-            codigo_vaga = str(random.randint(1000, 9999))
+            # Gerar um código aleatório único para a vaga (reserva)
+            # Um loop simples para garantir a unicidade do código.
+            codigo_vaga = ''
+            while True:
+                codigo_vaga = str(random.randint(1000, 9999))
+                # Verifica se o código já existe em Vaga (qualquer estado)
+                if not Vaga.objects.filter(codigo=codigo_vaga).exists():
+                    break
             
-            # Criar registro na tabela Vaga
+            # Criar um novo registro na tabela Vaga (representando a ocupação ATUAL)
+            # Este registro será DELETADO quando o usuário sair.
             Vaga.objects.create(
                 codigo=codigo_vaga,
                 estacionamento=estacionamento,
-                id_user=request.user  
+                id_user=request.user,  # Associar a vaga ao usuário logado
+                disponivel=False,      # Esta instância de vaga está ocupada
+                active=True            # Marcar esta vaga como atualmente ativa
             )
             
             messages.success(request, f'Vaga reservada com sucesso! Código: {codigo_vaga}')
             return redirect('mapa')
+            
         except Estacionamento.DoesNotExist:
             messages.error(request, 'Estacionamento não encontrado.')
             return redirect('mapa')
         except Exception as e:
+            # Captura erros gerais e os exibe para o usuário
+            print(f"Erro detalhado em reservar_vaga: {e}") 
+            traceback.print_exc() 
             messages.error(request, f'Erro ao reservar vaga: {str(e)}')
             return redirect('mapa')
     
-    # Se não for POST, redireciona para o mapa (comportamento original)
+    # Se a requisição não for POST, redireciona para o mapa
     return redirect('mapa')
 
-
-@login_required
+@login_required 
 def sair_da_vaga(request):
+    """
+    Função para o usuário sair da vaga.
+    Deleta o registro da Vaga e incrementa o contador no Historico.
+    """
     if request.method == 'POST':
         try:
+            # Garante que todas as operações dentro do bloco sejam bem-sucedidas
+            # ou todas sejam revertidas (atomicidade).
             with transaction.atomic():
-                vaga_a_liberar = Vaga.objects.get(id_user=request.user)
+                # 1. Encontrar a vaga ATIVA do usuário logado.
+                # Use select_for_update para evitar problemas de concorrência.
+                vaga_a_liberar = Vaga.objects.select_for_update().get(id_user=request.user, active=True)
+                
                 estacionamento = vaga_a_liberar.estacionamento
                 
-                # Certifique-se que 'estacionamento' não é None antes de prosseguir
                 if estacionamento is None:
-                    # Isso não deveria acontecer se o ForeignKey Vaga->Estacionamento for NOT NULL
                     messages.error(request, 'Erro: A vaga não está associada a um estacionamento válido.')
                     return redirect('mapa')
 
+                # 2. Incrementar vagas disponíveis no estacionamento
                 estacionamento.vagas_disponiveis += 1
                 estacionamento.save()
                 
+                # 3. --- NOVO: Atualizar o Historico ---
+                # Busca ou cria o registro de contador para este usuário e estacionamento
+                historico_contador, created = Historico.objects.get_or_create(
+                    user=request.user, 
+                    estacionamento=estacionamento,
+                    defaults={'num_paradas': 0} # Se for criado, começa com 0
+                )
+                historico_contador.num_paradas += 1 # Incrementa o contador
+                historico_contador.save() # Salva o contador atualizado
+                
+                # 4. --- VOLTANDO AO COMPORTAMENTO ORIGINAL: Deletar a vaga ---
+                # O registro de Vaga (que representava a ocupação ativa) é removido.
                 vaga_a_liberar.delete()
             
             messages.success(request, 'Você saiu da vaga com sucesso! Ela agora está disponível para outros usuários.')
@@ -274,13 +301,12 @@ def sair_da_vaga(request):
             messages.error(request, 'Não foi encontrada nenhuma reserva ativa em seu nome para liberar.')
             return redirect('mapa')
         except Exception as e:
-            # LINHAS IMPORTANTES PARA DEBUG:
             print(f"---------------------------------------------------------")
             print(f"ERRO DETALHADO EM sair_da_vaga:")
             print(f"Tipo do Erro: {type(e).__name__}")
             print(f"Mensagem do Erro: {str(e)}")
             print(f"Traceback Completo:")
-            traceback.print_exc() # Isso imprimirá o traceback completo no console
+            traceback.print_exc() 
             print(f"---------------------------------------------------------")
             
             messages.error(request, f'Ocorreu um erro ao tentar sair da vaga. Por favor, tente novamente.')

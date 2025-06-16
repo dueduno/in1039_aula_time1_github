@@ -36,14 +36,22 @@ class Vaga(models.Model):
     codigo = models.CharField(max_length=10, unique=True)
     estacionamento = models.ForeignKey(Estacionamento, on_delete=models.CASCADE, related_name='vagas')
     disponivel = models.BooleanField(default=True) # Pode ser default=False se criada apenas ao reservar.
+    active = models.BooleanField(default=False) 
     
     id_user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,  
         null=True,                  
         blank=True,                 
-        related_name='vagas_reservadas' # Nome para acessar as vagas a partir de um objeto User
+        related_name='vagas_reservadas' 
     )
+    
+    def __str__(self):
+        if self.active and self.id_user:
+            return f"Vaga {self.codigo} ({self.estacionamento.nome}) - Reservada por: {self.id_user.username} (ATIVA)"
+        elif self.id_user:
+            return f"Vaga {self.codigo} ({self.estacionamento.nome}) - Histórico de Reserva para: {self.id_user.username} (INATIVA)"
+        return f"Vaga {self.codigo} ({self.estacionamento.nome}) - Inativa/Disponível para nova reserva"
     
 
     def __str__(self):
@@ -65,3 +73,20 @@ class Reserva(models.Model):
     def __str__(self):
         return self.codigo
 
+
+class Historico(models.Model):
+    """
+    Registra quantas vezes um usuário específico parou em um estacionamento específico.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contagem_estacionamentos')
+    estacionamento = models.ForeignKey(Estacionamento, on_delete=models.CASCADE, related_name='contagem_usuarios')
+    num_paradas = models.IntegerField(default=0) # Contador de vezes que o usuário parou neste estacionamento
+
+    class Meta:
+        # Garante que um usuário só tenha um contador por estacionamento
+        unique_together = ('user', 'estacionamento')
+        verbose_name = "Contador de Paradas no Estacionamento"
+        verbose_name_plural = "Contadores de Paradas nos Estacionamentos"
+
+    def __str__(self):
+        return f"{self.user.username} parou {self.num_paradas} vezes em {self.estacionamento.nome}"
