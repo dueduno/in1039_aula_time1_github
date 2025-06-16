@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Favoritos com Filtros e Distância</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css" />
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .barra-roxa {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background-color: #A151E6;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* centraliza só os nomes */
+      padding: 0 60px;
+      /* espaço maior para o botão voltar */
+      font-size: 20px;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      position: fixed;
+    }
+
+    .barra-roxa .botao-voltar {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+      z-index: 1100;
+    }
+
+    .barra-roxa .botao-voltar:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      text-decoration: underline;
+    }
+
+    .barra-roxa ul {
+      list-style: none;
+      display: flex;
+      gap: 40px;
+      margin: 0;
+      padding: 0;
+      justify-content: center;
+      /* centraliza os itens */
+      flex-grow: 1;
+      /* faz a ul ocupar o máximo para poder centralizar */
+    }
+
+
+    .barra-roxa ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .barra-roxa ul li a:hover,
+    .barra-roxa ul li a.ativo {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .principal {
+      display: flex;
+      height: calc(100vh - 80px);
+      margin-top: 80px;
+      /* espaço pra barra fixa */
+      width: 100%;
+    }
+
+    .lado-esquerdo {
+      width: 350px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-right: 1px solid #ccc;
+      overflow-y: auto;
+    }
+
+    .lado-direito {
+      flex-grow: 1;
+      height: 100%;
+      background-color: #eaeaea;
+    }
+
+    #mapa {
+      width: 100%;
+      height: 100%;
+      padding-top: 80px;
+      /* distância do topo igual à barra */
+      box-sizing: border-box;
+    }
+
+    /* Responsividade básica */
+    @media (max-width: 768px) {
+      .principal {
+        flex-direction: column;
+        height: auto;
+        margin-top: 60px;
+      }
+
+      .lado-esquerdo {
+        width: 100%;
+        height: 200px;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .lado-direito {
+        height: 400px;
+      }
+    }
+
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+    }
+
+    .lado-esquerdo {
+      width: 50%;
+      padding: 20px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    .lado-direito {
+      width: 50%;
+    }
+
+    .vaga {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    #slider-distancia {
+      margin: 15px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="barra-roxa">
+    <button class="botao-voltar">← Voltar</button>
+    <nav>
+      <ul>
+        <li><a href="#">Histórico</a></li>
+        <li><a href="#" class="ativo">Favoritos</a></li>
+        <li><a href="#">Recentes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="barra-roxa">
+    <button class="botao-voltar">←</button>
+    <ul>
+      <li><a href="#">Histórico</a></li>
+      <li><a href="#" class="ativo">Favoritos</a></li>
+      <li><a href="#">Recentes</a></li>
+    </ul>
+    <div style="width: 60px;"></div> <!-- Espaço pra balancear -->
+  </div>
+
+
+
+  <section class="lado-esquerdo">
+
+    <h4>Categoria</h4>
+    <label><input type="checkbox" class="filtro-categoria" value="trabalho" checked /> Trabalho</label><br>
+    <label><input type="checkbox" class="filtro-categoria" value="lazer" checked /> Lazer</label><br>
+    <label><input type="checkbox" class="filtro-categoria" value="clinicas" checked /> Clínicas</label><br>
+
+    <h4>Tipo de Vaga</h4>
+    <label><input type="checkbox" class="filtro-tipo" value="coberto" checked /> Coberto</label><br>
+    <label><input type="checkbox" class="filtro-tipo" value="descoberto" checked /> Descoberto</label><br>
+    <label><input type="checkbox" class="filtro-tipo" value="publica-gratis" checked /> Pública Gratuita</label><br>
+
+    <h4>Modo de Cobrança</h4>
+    <label><input type="checkbox" class="filtro-cobranca" value="hora" checked /> Por Hora</label><br>
+    <label><input type="checkbox" class="filtro-cobranca" value="diaria" checked /> Diária</label><br>
+    <label><input type="checkbox" class="filtro-cobranca" value="mensal" checked /> Mensal</label><br>
+
+    <h4>Horário de Atendimento</h4>
+    <label><input type="checkbox" class="filtro-horario" value="comercial" checked /> Comercial</label><br>
+    <label><input type="checkbox" class="filtro-horario" value="ate-22" checked /> Até 22h</label><br>
+    <label><input type="checkbox" class="filtro-horario" value="24h" checked /> 24h</label><br>
+
+    <h4>Dias de Funcionamento</h4>
+    <label><input type="checkbox" class="filtro-dias" value="seg-sex" checked /> Seg. à Sex.</label><br>
+    <label><input type="checkbox" class="filtro-dias" value="sabado" checked /> Sábado</label><br>
+    <label><input type="checkbox" class="filtro-dias" value="todos" checked /> Todos os dias</label><br>
+
+    <h4>Distância máxima (km): <span id="distancia-valor">10</span></h4>
+    <div id="slider-distancia"></div>
+    <p>Clique no mapa para definir o ponto de referência para filtro por distância.</p>
+
+    <h3>Vagas</h3>
+
+    <!-- Adicione lat/lng reais das vagas aqui para o filtro funcionar -->
+    <div class="vaga" data-categoria="trabalho" data-tipo="coberto" data-cobranca="hora" data-horario="comercial"
+      data-dias="seg-sex" data-lat="-15.7934" data-lng="-47.8827">
+      <strong>Av. Paulista, São Paulo</strong>
+      <p>Categoria: Trabalho</p>
+      <p>Tipo: Coberto</p>
+      <p>Cobrança: Por Hora</p>
+      <p>Horário: Comercial</p>
+      <p>Dias: Seg à Sex</p>
+    </div>
+
+    <div class="vaga" data-categoria="lazer" data-tipo="descoberto" data-cobranca="diaria" data-horario="ate-22"
+      data-dias="sabado" data-lat="-25.4284" data-lng="-49.2733">
+      <strong>Rua das Flores, Curitiba</strong>
+      <p>Categoria: Lazer</p>
+      <p>Tipo: Descoberto</p>
+      <p>Cobrança: Diária</p>
+      <p>Horário: Até 22h</p>
+      <p>Dias: Sábado</p>
+    </div>
+
+    <div class="vaga" data-categoria="clinicas" data-tipo="publica-gratis" data-cobranca="mensal" data-horario="24h"
+      data-dias="todos" data-lat="-19.9208" data-lng="-43.9378">
+      <strong>Av. Brasil, Belo Horizonte</strong>
+      <p>Categoria: Clínicas</p>
+      <p>Tipo: Pública Gratuita</p>
+      <p>Cobrança: Mensal</p>
+      <p>Horário: 24h</p>
+      <p>Dias: Todos os dias</p>
+    </div>
+  </section>
+
+  <section class="lado-direito">
+    <div id="mapa" style="height: 100vh;"></div>
+  </section>
+
+  <!-- Bibliotecas -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+
+  <script>
+    // Inicializa o mapa
+    var mapa = L.map('mapa').setView([-15.7942, -47.8822], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © OpenStreetMap contributors'
+    }).addTo(mapa);
+
+    // Função para calcular distância em km usando fórmula Haversine
+    function distanciaKm(lat1, lon1, lat2, lon2) {
+      function toRad(x) {return x * Math.PI / 180;}
+      var R = 6371; // raio da terra em km
+      var dLat = toRad(lat2 - lat1);
+      var dLon = toRad(lon2 - lon1);
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const checkboxes = {
+        categoria: document.querySelectorAll('.filtro-categoria'),
+        tipo: document.querySelectorAll('.filtro-tipo'),
+        cobranca: document.querySelectorAll('.filtro-cobranca'),
+        horario: document.querySelectorAll('.filtro-horario'),
+        dias: document.querySelectorAll('.filtro-dias')
+      };
+      const vagas = document.querySelectorAll('.vaga');
+      const slider = document.getElementById('slider-distancia');
+      const distanciaValor = document.getElementById('distancia-valor');
+
+      let pontoReferencia = null;
+      let marcadorReferencia = null;
+
+      // Cria slider
+      noUiSlider.create(slider, {
+        start: [10],
+        connect: 'lower',
+        step: 1,
+        range: {min: 1, max: 100},
+        format: {
+          to: value => Math.round(value),
+          from: value => Number(value)
+        }
+      });
+
+      distanciaValor.textContent = slider.noUiSlider.get();
+
+      function aplicarFiltros() {
+        const filtros = {
+          categoria: Array.from(checkboxes.categoria).filter(cb => cb.checked).map(cb => cb.value),
+          tipo: Array.from(checkboxes.tipo).filter(cb => cb.checked).map(cb => cb.value),
+          cobranca: Array.from(checkboxes.cobranca).filter(cb => cb.checked).map(cb => cb.value),
+          horario: Array.from(checkboxes.horario).filter(cb => cb.checked).map(cb => cb.value),
+          dias: Array.from(checkboxes.dias).filter(cb => cb.checked).map(cb => cb.value)
+        };
+
+        const distanciaMax = Number(slider.noUiSlider.get());
+
+        vagas.forEach(vaga => {
+          const okFiltros =
+            filtros.categoria.includes(vaga.dataset.categoria) &&
+            filtros.tipo.includes(vaga.dataset.tipo) &&
+            filtros.cobranca.includes(vaga.dataset.cobranca) &&
+            filtros.horario.includes(vaga.dataset.horario) &&
+            filtros.dias.includes(vaga.dataset.dias);
+
+          if (!pontoReferencia) {
+            vaga.style.display = okFiltros ? 'block' : 'none';
+            return;
+          }
+
+          const lat = parseFloat(vaga.dataset.lat);
+          const lng = parseFloat(vaga.dataset.lng);
+          const dist = distanciaKm(pontoReferencia.lat, pontoReferencia.lng, lat, lng);
+
+          vaga.style.display = (okFiltros && dist <= distanciaMax) ? 'block' : 'none';
+        });
+      }
+
+      // Eventos para checkboxes
+      Object.values(checkboxes).forEach(grupo => {
+        grupo.forEach(cb => cb.addEventListener('change', aplicarFiltros));
+      });
+
+      // Evento slider
+      slider.noUiSlider.on('update', (values) => {
+        distanciaValor.textContent = values[0];
+        aplicarFiltros();
+      });
+
+      // Clique no mapa para escolher ponto de referência
+      mapa.on('click', e => {
+        pontoReferencia = e.latlng;
+
+        if (marcadorReferencia) {
+          mapa.removeLayer(marcadorReferencia);
+        }
+        marcadorReferencia = L.marker(pontoReferencia).addTo(mapa).bindPopup('Ponto de referência').openPopup();
+
+        aplicarFiltros();
+      });
+
+      aplicarFiltros(); // filtro inicial
+    });
+  </script>
+
+</body>
+
+</html>

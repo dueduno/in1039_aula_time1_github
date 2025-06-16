@@ -323,3 +323,7 @@ def termos_de_uso(request):
 
 def suporte(request):
     return render(request,'suporte.html')
+
+@login_required 
+def favoritos(request):
+    return render(request,'favoritos.html')
