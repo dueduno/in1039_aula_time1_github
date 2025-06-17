@@ -329,5 +329,3 @@ def favoritos(request):
     return render(request,'favoritos.html')
 
 
-def esqueci_senha_email(request):
-    return render(request,'esqueci_senha_email.html')

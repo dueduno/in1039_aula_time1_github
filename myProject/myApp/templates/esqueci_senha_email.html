@@ -1,3 +1,4 @@
+{# esqueci_senha_email.html #}
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -21,9 +22,9 @@
         </h1>
     </div>
     <div class="retangulo-baixo">
-        <button class="link-footer" onclick="window.location.href='suporte.html'">Suporte</button>
-        <button class="link-footer" onclick="window.location.href='termo_de_uso.html'">Termos de Uso</button>
-        <button class="link-footer" onclick="window.location.href='politica_de_privacidade.html'">Política de Privacidade</button>
+        <button class="link-footer" onclick="window.location.href='{% url 'suporte' %}'">Suporte</button>
+        <button class="link-footer" onclick="window.location.href='{% url 'termos_de_uso' %}'">Termos de Uso</button> {# CORRIGIDO: 'termo_de_uso' para 'termos_de_uso' #}
+        <button class="link-footer" onclick="window.location.href='{% url 'politica_privacidade' %}'">Política de Privacidade</button>
     </div>
 
     <div class="container">
@@ -31,19 +32,14 @@
             <h4 style="text-align: center;">
                 Insira o e-mail para <br>recuperação da senha
             </h4>
-            <form action="/action_page.php">
-                <input type="email" placeholder="E-mail" name="email" required>
-                <div style="position: relative;"></div>
+            <form method="POST"> {# REMOVIDO action="/action_page.php" #}
+                {% csrf_token %}
+                {# Isso renderiza o campo de e-mail do formulário Django #}
+                {{ form.as_p }} 
+                {# Se quiser personalizar mais, pode usar: {{ form.email }} #}
                 <input type="submit" value="Enviar e-mail">
-                <a href="esqueci_senha_nova_senha.html"></a>
-
-                <div class="links-auxiliares">
-
-                </div>
             </form>
         </div>
     </div>
-
-    
 </body>
 </html>
