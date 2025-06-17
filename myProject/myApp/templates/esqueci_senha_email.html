@@ -1,0 +1,45 @@
+{# esqueci_senha_email.html #}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esqueceu sua senha?</title>
+    <link rel="stylesheet" href="{% static 'myApp/css/esqueci_senha_email.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+    
+</head>
+<body>
+    <div class="retangulo-topo">
+        <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+        <h1 style="text-align: center; color: #ffffff; font-size: 40px;">
+            Recuperação de senha
+        </h1>
+    </div>
+    <div class="retangulo-baixo">
+        <button class="link-footer" onclick="window.location.href='{% url 'suporte' %}'">Suporte</button>
+        <button class="link-footer" onclick="window.location.href='{% url 'termos_de_uso' %}'">Termos de Uso</button> {# CORRIGIDO: 'termo_de_uso' para 'termos_de_uso' #}
+        <button class="link-footer" onclick="window.location.href='{% url 'politica_privacidade' %}'">Política de Privacidade</button>
+    </div>
+
+    <div class="container">
+        <div class="formulario-login">
+            <h4 style="text-align: center;">
+                Insira o e-mail para <br>recuperação da senha
+            </h4>
+            <form method="POST"> {# REMOVIDO action="/action_page.php" #}
+                {% csrf_token %}
+                {# Isso renderiza o campo de e-mail do formulário Django #}
+                {{ form.as_p }} 
+                {# Se quiser personalizar mais, pode usar: {{ form.email }} #}
+                <input type="submit" value="Enviar e-mail">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
