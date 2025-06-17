@@ -22,3 +22,6 @@ def home(request):
     }
 
     return render(request, "home.html",context=context)
+
+def historico(request):
+     return render(request, "historico.html")

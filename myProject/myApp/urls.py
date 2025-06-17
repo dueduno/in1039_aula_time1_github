@@ -3,4 +3,6 @@ from django.urls import path
 
 urlpatterns = [
     path("",views.home, name="home"),
+    path("",views.historico, name="historico"),
 ]
+
