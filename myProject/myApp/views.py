@@ -328,4 +328,12 @@ def suporte(request):
 def favoritos(request):
     return render(request,'favoritos.html')
 
+@login_required
+def trocar_imagem_perfil(request):
+    if request.method == 'POST' and request.FILES.get('nova_imagem'):
+        imagem = request.FILES['nova_imagem']
+        user = request.user
+        user.profile.foto = imagem  # tendo na cabeca que tem um campo `foto` no seu modelo de perfil.
+        user.profile.save()
+    return redirect('perfil')  # redireciona para a página de perfil.
 

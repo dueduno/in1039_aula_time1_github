@@ -22,8 +22,18 @@
  
     <div class="perfil-container">
         <div class="foto-perfil">
-            <img src="{% static 'myApp/images/perfil-img.jpg' %}" alt="Foto de perfil do usuário" />
+
+            <!-- Foto de perfil -->
+            <img src="{{ user.cliente.foto.url }}" alt="Foto de perfil do usuário" />
             <h3>{{ user.get_full_name|default:user.username }}</h3>
+            
+            <!-- Novo formulário para trocar a imagem -->
+            <form action="{% url 'trocar_imagem_perfil' %}" method="POST" enctype="multipart/form-data" class="form-trocar-imagem">
+                {% csrf_token %}
+                <label for="nova_imagem" class="botao-editar">Escolher nova foto</label>
+                <input type="file" name="nova_imagem" id="nova_imagem" accept="image/*" style="display: none;" onchange="this.form.submit()">
+            </form>
+
         </div>
 
         <div class="informacoes-perfil">

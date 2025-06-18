@@ -26,6 +26,7 @@ urlpatterns = [
     path('termos-de-uso/', views.termos_de_uso, name='termos_de_uso'),
     path('suporte/', views.suporte, name='suporte'),
     path('favoritos/', views.favoritos, name='favoritos'),
+    path('trocar_imagem_perfil/', views.trocar_imagem_perfil, name='trocar_imagem_perfil'),
 
     # REMOVIDA A LINHA ABAIXO para evitar duplicação
     # path('esqueci_senha_email/',views.esqueci_senha_email,name='esqueci_senha_email'),
