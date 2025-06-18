@@ -1,0 +1,75 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  nav ul li a.ativo {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 28px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+  
+  .barra-roxa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: #A151E6;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 60px;
+    font-size: 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .botao-voltar {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+  
+  .principal {
+    display: flex;
+    height: calc(100% - 80px);
+    margin-top: 80px;
+    overflow-y: auto;
+  }
+  
+  .lado-esquerdo {
+    width: 300px;
+    background-color: #f5f5f5;
+    border-right: 1px solid #ccc;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  
+  .filtro-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  
+  .filtro-card h4 {
+    margin-top: 0;
+    color: #5a5a55;
+  }
