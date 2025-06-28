@@ -484,7 +484,11 @@
                 endereco: "{{ estacionamento.endereco | escapejs }}",
                 total_vagas: {{ estacionamento.total_vagas }},
                 vagas_disponiveis: {{ estacionamento.vagas_disponiveis }},
-                preco: parseFloat("{{ estacionamento.preco }}") // Garantir que é número
+                preco: parseFloat("{{ estacionamento.preco }}"), // Garantir que é número
+                tipo: "{{ estacionamento.tipo | escapejs }}", // Novo campo
+                modo_cobranca: "{{ estacionamento.modo_cobranca | escapejs }}", // Novo campo
+                dias_funcionamento: "{{ estacionamento.dias_funcionamento | escapejs }}", // Novo campo
+                horario_atendimento: "{{ estacionamento.horario_atendimento | escapejs }}" // Novo campo
             }{% if not forloop.last %},{% endif %}
             {% endfor %}
         ];
@@ -539,11 +543,11 @@
                                 if (idEstacionamentoReservado === estacionamentoObj.id) {
                                     // Botão SAIR DA VAGA para o estacionamento reservado
                                     botaoAcao = `<form action="{% url 'sair_vaga' %}" method="post" style="margin-top: 8px; text-align:center;">
-                                                     {% csrf_token %}
-                                                     <button type="submit" class="reserve-btn" style="background-color: #dc3545;" onclick="return confirm('Tem certeza que deseja sair desta vaga?');">
-                                                         <i class="fas fa-times-circle"></i> Sair da Vaga
-                                                     </button>
-                                                 </form>`;
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="reserve-btn" style="background-color: #dc3545;" onclick="return confirm('Tem certeza que deseja sair desta vaga?');">
+                                                        <i class="fas fa-times-circle"></i> Sair da Vaga
+                                                    </button>
+                                                </form>`;
                                 } else {
                                     // Usuário tem reserva em OUTRO lugar, desabilita reservar aqui
                                     botaoAcao = `<button class="reserve-btn" disabled title="Você já possui uma reserva ativa em outro estacionamento.">Reservar</button>`;
@@ -551,14 +555,18 @@
                             } else {
                                 // Botão RESERVAR normal
                                 botaoAcao = `<button class="reserve-btn" onclick="reservarVaga(${estacionamentoObj.id})" ${estacionamentoObj.vagas_disponiveis === 0 ? 'disabled' : ''}>
-                                                 ${estacionamentoObj.vagas_disponiveis === 0 ? 'Lotado' : 'Reservar'}
-                                             </button>`;
+                                                    ${estacionamentoObj.vagas_disponiveis === 0 ? 'Lotado' : 'Reservar'}
+                                                </button>`;
                             }
                             popupContent = `
                                 <b>${estacionamentoObj.nome}</b><br>
                                 Endereço: ${estacionamentoObj.endereco}<br>
                                 Vagas disponíveis: ${estacionamentoObj.vagas_disponiveis}/${estacionamentoObj.total_vagas}<br>
                                 Preço: R$${estacionamentoObj.preco.toFixed(2)}<br>
+                                Tipo: ${estacionamentoObj.tipo || 'Não informado'}<br>
+                                Cobrança: ${estacionamentoObj.modo_cobranca || 'Não informado'}<br>
+                                Funcionamento: ${estacionamentoObj.dias_funcionamento || 'Não informado'}<br>
+                                Horário: ${estacionamentoObj.horario_atendimento || 'Não informado'}<br>
                                 ${botaoAcao}
                             `;
                         } else { // Se foi uma busca genérica de endereço
@@ -690,18 +698,18 @@
                             if (usuarioTemReservaAtiva) {
                                 if (idEstacionamentoReservado === estacionamento.id) {
                                     botaoAcao = `<form action="{% url 'sair_vaga' %}" method="post" style="margin-top: 8px; text-align:center;">
-                                                     {% csrf_token %}
-                                                     <button type="submit" class="reserve-btn" style="background-color: #dc3545;" onclick="return confirm('Tem certeza que deseja sair desta vaga?');">
-                                                         <i class="fas fa-times-circle"></i> Sair da Vaga
-                                                     </button>
-                                                 </form>`;
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="reserve-btn" style="background-color: #dc3545;" onclick="return confirm('Tem certeza que deseja sair desta vaga?');">
+                                                        <i class="fas fa-times-circle"></i> Sair da Vaga
+                                                    </button>
+                                                </form>`;
                                 } else {
                                     botaoAcao = `<button class="reserve-btn" disabled title="Você já possui uma reserva ativa em outro estacionamento.">Reservar</button>`;
                                 }
                             } else {
                                 botaoAcao = `<button class="reserve-btn" onclick="reservarVaga(${estacionamento.id})" ${estacionamento.vagas_disponiveis === 0 ? 'disabled' : ''}>
-                                                 ${estacionamento.vagas_disponiveis === 0 ? 'Lotado' : 'Reservar'}
-                                             </button>`;
+                                                    ${estacionamento.vagas_disponiveis === 0 ? 'Lotado' : 'Reservar'}
+                                                </button>`;
                             }
 
                             const marker = L.marker([lat, lon], {
@@ -718,6 +726,10 @@
                                 Endereço: ${estacionamento.endereco}<br>
                                 Vagas disponíveis: ${estacionamento.vagas_disponiveis}/${estacionamento.total_vagas}<br>
                                 Preço: R$${estacionamento.preco.toFixed(2)}<br>
+                                Tipo: ${estacionamento.tipo || 'Não informado'}<br>
+                                Cobrança: ${estacionamento.modo_cobranca || 'Não informado'}<br>
+                                Funcionamento: ${estacionamento.dias_funcionamento || 'Não informado'}<br>
+                                Horário: ${estacionamento.horario_atendimento || 'Não informado'}<br>
                                 ${botaoAcao}
                             `);
                         } else {

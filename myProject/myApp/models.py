@@ -18,13 +18,19 @@ class Cliente(models.Model):
 class Administrador(Cliente):
     cnpj = models.CharField(max_length=18, unique=True)
 
+from django.db import models
+
 class Estacionamento(models.Model):
     nome = models.CharField(max_length=255)
     endereco = models.CharField(max_length=255)
     total_vagas = models.IntegerField()
     vagas_disponiveis = models.IntegerField()
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    
+    tipo = models.CharField(max_length=100, default='Geral') 
+    modo_cobranca = models.CharField(max_length=100, default='Por hora')
+    dias_funcionamento = models.CharField(max_length=255, default='Segunda a Sexta')
+    horario_atendimento = models.CharField(max_length=100, default='08:00 - 18:00')
+
     def __str__(self):
         return self.nome
 
