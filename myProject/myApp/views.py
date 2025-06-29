@@ -351,6 +351,10 @@ def favoritos(request):
     return render(request,'favoritos.html')
 
 
+def historico(request):
+     return render(request, "historico.html")   
+
+
 #-----------------------------------------------VIEWS DA API ---------------------------------------------------
 
 class ClienteViewSet(viewsets.ModelViewSet):

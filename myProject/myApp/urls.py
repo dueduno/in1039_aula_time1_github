@@ -42,7 +42,8 @@ urlpatterns = [
     path('politica_privacidade/', views.politica_privacidade, name='politica_privacidade'),
     path('termos-de-uso/', views.termos_de_uso, name='termos_de_uso'),
     path('suporte/', views.suporte, name='suporte'),
-    path('favoritos/', views.favoritos, name='favoritos'),
+    path('pagina_favoritos/', views.favoritos, name='favoritos'),
+    path("pagina_historico/",views.historico, name="historico"),
 
     # --------------- REINICIAÇÃO DE SENHA DO DJANGO -----------------
     path('esqueci_senha_email/', auth_views.PasswordResetView.as_view(
