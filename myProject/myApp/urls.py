@@ -66,6 +66,5 @@ urlpatterns = [
     ), name='password_reset_complete_custom'),
 ]
 
-# Adicione as URLs do router diretamente à lista urlpatterns
-# O router.urls já é uma lista de URLs, então você pode concatenar
+
 urlpatterns += api_router_urls

@@ -1,4 +1,3 @@
-# meuapp/serializers.py
 from rest_framework import serializers
 from .models import Cliente, Administrador, Estacionamento, Vaga, Reserva, Historico, Possui, Contem
 from django.contrib.auth.models import User
@@ -11,23 +10,21 @@ class UserSerializer(serializers.ModelSerializer):
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = '__all__' # Inclui todos os campos do modelo Cliente
+        fields = '__all__' 
 
 class AdministradorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Administrador
-        fields = '__all__' # Inclui todos os campos de Administrador e herda os de Cliente
+        fields = '__all__' 
 
 class EstacionamentoSerializer(serializers.ModelSerializer):
-    # Serializador aninhado para exibir as vagas relacionadas ao estacionamento
-    vagas = serializers.StringRelatedField(many=True, read_only=True) # ou VagaSerializer(many=True, read_only=True) se quiser mais detalhes
+    vagas = serializers.StringRelatedField(many=True, read_only=True) 
 
     class Meta:
         model = Estacionamento
         fields = '__all__'
 
 class VagaSerializer(serializers.ModelSerializer):
-    # Exibe o username do usuário se a vaga estiver associada a um
     id_user = UserSerializer(read_only=True) 
     estacionamento_nome = serializers.CharField(source='estacionamento.nome', read_only=True)
 
@@ -51,7 +48,7 @@ class HistoricoSerializer(serializers.ModelSerializer):
         model = Historico
         fields = '__all__'
 
-# Serializers para as tabelas de relacionamento (se precisar expô-las diretamente na API)
+
 class PossuiSerializer(serializers.ModelSerializer):
     funcionario_nome = serializers.CharField(source='funcionario.nome', read_only=True)
     estacionamento_nome = serializers.CharField(source='estacionamento.nome', read_only=True)
