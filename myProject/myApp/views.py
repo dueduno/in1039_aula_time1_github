@@ -180,17 +180,33 @@ def mapa(request):
 def criar_estacionamento(request):
     if request.method == 'POST':
         try:
+            nome = request.POST['nome']
+            endereco = request.POST['endereco']
+            total_vagas = int(request.POST['total_vagas'])
+            preco = float(request.POST['preco'])
+            tipo = request.POST.get('tipo', '') 
+            modo_cobranca = request.POST.get('modo_cobranca', '')
+            dias_funcionamento = request.POST.get('dias_funcionamento', '')
+            horario_atendimento = request.POST.get('horario_atendimento', '')
+
             Estacionamento.objects.create(
-                nome=request.POST['nome'],
-                endereco=request.POST['endereco'],
-                total_vagas=int(request.POST['total_vagas']),
-                vagas_disponiveis=int(request.POST['total_vagas']),
-                preco=float(request.POST['preco'])
+                nome=nome,
+                endereco=endereco,
+                total_vagas=total_vagas,
+                vagas_disponiveis=total_vagas, 
+                preco=preco,
+                tipo=tipo,
+                modo_cobranca=modo_cobranca,
+                dias_funcionamento=dias_funcionamento,
+                horario_atendimento=horario_atendimento
             )
             messages.success(request, 'Estacionamento cadastrado com sucesso!')
-            return redirect('mapa')
+            return redirect('mapa') 
+        except ValueError as ve:
+            messages.error(request, f'Erro de validação nos dados: {str(ve)}. Verifique os campos numéricos.')
         except Exception as e:
-            messages.error(request, f'Erro ao cadastrar: {str(e)}')
+            messages.error(request, f'Erro ao cadastrar estacionamento: {str(e)}')
+    
     
     return render(request, 'criar_estacionamento.html')
 

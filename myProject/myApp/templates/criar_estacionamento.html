@@ -68,8 +68,12 @@
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
       padding: 30px;
-      max-width: 600px;
-      width: 100%;
+      /* Ajuste principal: aumentamos o max-width para o formulário ocupar mais espaço */
+      max-width: 800px; /* Alterado de 600px para 800px */
+      width: 90%; /* Ajustado para 90% para dar um pouco mais de margem em telas pequenas */
+      margin-top: 120px; /* Espaço para o retângulo de cima */
+      margin-bottom: 120px; /* Espaço para o retângulo de baixo */
+      box-sizing: border-box; /* Garante que padding não adicione à largura total */
     }
 
     .form-title {
@@ -106,7 +110,6 @@
       text-decoration: underline;
     }
 
-    
   </style>
 </head>
 <body>
@@ -137,6 +140,30 @@
       <div class="mb-3">
         <label for="total_vagas" class="form-label">Total de Vagas*</label>
         <input type="number" class="form-control" id="total_vagas" name="total_vagas" min="1" required>
+      </div>
+
+      <!-- Tipo de Estacionamento -->
+      <div class="mb-3">
+        <label for="tipo" class="form-label">Tipo de Estacionamento</label>
+        <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Ex: Coberto, Ao ar livre, Subterrâneo">
+      </div>
+
+      <!-- Modo de Cobrança -->
+      <div class="mb-3">
+        <label for="modo_cobranca" class="form-label">Modo de Cobrança</label>
+        <input type="text" class="form-control" id="modo_cobranca" name="modo_cobranca" placeholder="Ex: Por hora, Diária, Mensal">
+      </div>
+
+      <!-- Dias de Funcionamento -->
+      <div class="mb-3">
+        <label for="dias_funcionamento" class="form-label">Dias de Funcionamento</label>
+        <input type="text" class="form-control" id="dias_funcionamento" name="dias_funcionamento" placeholder="Ex: Seg-Sex, Todos os dias, Fins de semana">
+      </div>
+
+      <!-- Horário de Atendimento -->
+      <div class="mb-4">
+        <label for="horario_atendimento" class="form-label">Horário de Atendimento</label>
+        <input type="text" class="form-control" id="horario_atendimento" name="horario_atendimento" placeholder="Ex: 08:00 - 22:00, 24 horas">
       </div>
       
       <!-- Preço -->
