@@ -1,16 +1,33 @@
-# myApp/urls.py
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
+from rest_framework.routers import DefaultRouter
+from .views import (
+    ClienteViewSet, AdministradorViewSet, EstacionamentoViewSet,
+    VagaViewSet, ReservaViewSet, HistoricoViewSet,
+    PossuiViewSet, ContemViewSet, UserViewSet
+)
+
+# API
+router = DefaultRouter()
+router.register(r'clientes', ClienteViewSet)
+router.register(r'administradores', AdministradorViewSet)
+router.register(r'estacionamentos', EstacionamentoViewSet)
+router.register(r'vagas', VagaViewSet)
+router.register(r'reservas', ReservaViewSet)
+router.register(r'historico', HistoricoViewSet)
+router.register(r'possui', PossuiViewSet)
+router.register(r'contem', ContemViewSet)
+router.register(r'users', UserViewSet)
+
+# Crie uma lista separada para as URLs do router.
+# Elas não terão um prefixo aqui, o prefixo 'api/' será adicionado no urls.py principal.
+api_router_urls = router.urls
+
 
 urlpatterns = [
-    # Manter esta URL se 'esqueci_senha' for uma página diferente
-    # ou se for usada para algum outro propósito além da redefinição por e-mail.
-    # Se a intenção é que "Esqueci a senha" sempre leve ao fluxo de e-mail,
-    # esta linha pode ser removida e os links podem apontar para 'esqueci_senha_email'.
     path('esqueci_senha/', views.esqueci_senha, name='esqueci_senha'),
-
-    path('', views.home, name='home'),
+    path('home', views.home, name='home'),
     path('entrada/', views.entrada, name='entrada'),
     path('register/', views.create_user, name='register'),
     path('users/login/', views.login_user, name='login'),
@@ -27,31 +44,28 @@ urlpatterns = [
     path('suporte/', views.suporte, name='suporte'),
     path('favoritos/', views.favoritos, name='favoritos'),
 
-    # REMOVIDA A LINHA ABAIXO para evitar duplicação
-    # path('esqueci_senha_email/',views.esqueci_senha_email,name='esqueci_senha_email'),
-
-    # URL para a página onde o usuário insere o e-mail para redefinição
-    # Esta é a URL que deve ser usada para iniciar o fluxo de redefinição de senha do Django.
+    # --------------- REINICIAÇÃO DE SENHA DO DJANGO -----------------
     path('esqueci_senha_email/', auth_views.PasswordResetView.as_view(
         template_name='esqueci_senha_email.html',
-        email_template_name='password_reset_email_custom.html', # Você vai criar este
-        subject_template_name='password_reset_subject_custom.txt', # Você vai criar este
-        success_url='/password_reset_done_custom/' # Redireciona após o e-mail ser enviado
+        email_template_name='password_reset_email_custom.html',
+        subject_template_name='password_reset_subject_custom.txt',
+        success_url='/password_reset_done_custom/'
     ), name='esqueci_senha_email'),
 
-    # URL para a página que informa que o e-mail de redefinição foi enviado
     path('password_reset_done_custom/', auth_views.PasswordResetDoneView.as_view(
-        template_name='password_reset_done_custom.html' # Você vai criar este
+        template_name='password_reset_done_custom.html'
     ), name='password_reset_done_custom'),
 
-    # URL para a página onde o usuário define a nova senha
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
-        template_name='password_reset_confirm_custom.html', # Você vai criar este
-        success_url='/password_reset_complete_custom/' # Redireciona após a senha ser alterada
-    ), name='password_reset_confirm'), # Mantenha este nome padrão, é importante para o link do e-mail
+        template_name='password_reset_confirm_custom.html',
+        success_url='/password_reset_complete_custom/'
+    ), name='password_reset_confirm'),
 
-    # URL para a página de confirmação de redefinição de senha completa
     path('password_reset_complete_custom/', auth_views.PasswordResetCompleteView.as_view(
-        template_name='password_reset_complete_custom.html' # Você vai criar este
+        template_name='password_reset_complete_custom.html'
     ), name='password_reset_complete_custom'),
 ]
+
+# Adicione as URLs do router diretamente à lista urlpatterns
+# O router.urls já é uma lista de URLs, então você pode concatenar
+urlpatterns += api_router_urls

@@ -5,14 +5,20 @@ from django.shortcuts import redirect, render # Adicionado render para funções
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone 
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
 
 # Importe seus modelos. Ajuste os caminhos conforme a estrutura do seu projeto.
 from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva, Historico
 from django.contrib.auth.models import User 
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash # Adicionado para as funções de autenticação
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash 
+from rest_framework import viewsets
+from .serializers import (
+    ClienteSerializer, AdministradorSerializer, EstacionamentoSerializer,
+    VagaSerializer, ReservaSerializer, HistoricoSerializer,
+    PossuiSerializer, ContemSerializer
+)
 
-# Funções existentes (home, entrada, create_user, login_user, etc.)
-# Mantenha as funções abaixo exatamente como no seu código original.
 
 #@login_required
 def home(request):
@@ -345,3 +351,41 @@ def favoritos(request):
     return render(request,'favoritos.html')
 
 
+#-----------------------------------------------VIEWS DA API ---------------------------------------------------
+
+class ClienteViewSet(viewsets.ModelViewSet):
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteSerializer
+
+class AdministradorViewSet(viewsets.ModelViewSet):
+    queryset = Administrador.objects.all()
+    serializer_class = AdministradorSerializer
+
+class EstacionamentoViewSet(viewsets.ModelViewSet):
+    queryset = Estacionamento.objects.all()
+    serializer_class = EstacionamentoSerializer
+
+class VagaViewSet(viewsets.ModelViewSet):
+    queryset = Vaga.objects.all()
+    serializer_class = VagaSerializer
+
+class ReservaViewSet(viewsets.ModelViewSet):
+    queryset = Reserva.objects.all()
+    serializer_class = ReservaSerializer
+
+class HistoricoViewSet(viewsets.ModelViewSet):
+    queryset = Historico.objects.all()
+    serializer_class = HistoricoSerializer
+
+class PossuiViewSet(viewsets.ModelViewSet):
+    queryset = Possui.objects.all()
+    serializer_class = PossuiSerializer
+
+class ContemViewSet(viewsets.ModelViewSet):
+    queryset = Contem.objects.all()
+    serializer_class = ContemSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
