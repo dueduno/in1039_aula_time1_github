@@ -113,7 +113,6 @@
     #mapa {
       flex-grow: 1;
       height: 100%;
-      min-height: 300px;
     }
 
     .estacionamentos-coluna {
@@ -277,7 +276,6 @@
           to: value => Math.round(value),
           from: value => Number(value)
         }
-      
       });
 
       distanciaValor.textContent = slider.noUiSlider.get();
