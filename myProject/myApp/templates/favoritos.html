@@ -15,11 +15,19 @@
             overflow: hidden;
         }
 
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
         nav ul li a.ativo {
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
             font-size: 28px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            color: white;
+            text-decoration: none;
         }
 
         .barra-roxa {
@@ -58,7 +66,6 @@
             display: flex;
             height: calc(100% - 80px);
             margin-top: 80px;
-            overflow-y: auto;
         }
 
         .lado-esquerdo {
@@ -87,38 +94,12 @@
             margin-bottom: 8px;
         }
 
-        .lado-direito {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .estacionamentos {
-            padding: 10px;
-            background: #fff;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .vaga {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #fefefe;
-            border-radius: 6px;
-        }
-
-        #mapa {
-            flex-grow: 1;
-            height: 100%;
-        }
-
         .estacionamentos-coluna {
             width: 350px;
             background-color: #ffffff;
             border-right: 1px solid #ccc;
             padding: 10px;
-            overflow-y: auto; /* Adicionado para permitir scroll se a lista for grande */
+            overflow-y: auto;
         }
 
         .mapa-coluna {
@@ -129,7 +110,32 @@
 
         #mapa {
             flex: 1;
-            height: 100%;
+        }
+
+        .vaga {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fefefe;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .vaga:hover {
+            background-color: #eef;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .vaga p {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .vaga strong {
+            font-size: 16px;
+            color: #A151E6;
         }
 
     </style>
@@ -140,7 +146,7 @@
         <button class="botao-voltar" onclick="history.back()">← Voltar</button>
         <nav>
             <ul>
-                <li><a class="ativo">Favoritos</a></li>
+                <li><a href="#" class="ativo">Favoritos</a></li>
             </ul>
         </nav>
     </header>
@@ -151,37 +157,39 @@
                 <div class="filtros">
                     <div class="filtro-card">
                         <h4>Categoria</h4>
-                        <label><input type="checkbox" class="filtro-categoria" value="trabalho" checked /> Trabalho</label><br>
-                        <label><input type="checkbox" class="filtro-categoria" value="lazer" checked /> Lazer</label><br>
-                        <label><input type="checkbox" class="filtro-categoria" value="clinicas" checked /> Clínicas</label><br>
+                        <label><input type="checkbox" class="filtro-categoria" value="trabalho" /> Trabalho</label><br>
+                        <label><input type="checkbox" class="filtro-categoria" value="lazer" /> Lazer</label><br>
+                        <label><input type="checkbox" class="filtro-categoria" value="clinicas" /> Clínicas</label><br>
+                        <label><input type="checkbox" class="filtro-categoria" value="geral" /> Geral</label><br>
                     </div>
 
                     <div class="filtro-card">
                         <h4>Tipo de Vaga</h4>
-                        <label><input type="checkbox" class="filtro-tipo" value="coberto" checked /> Coberto</label><br>
-                        <label><input type="checkbox" class="filtro-tipo" value="descoberto" checked /> Descoberto</label><br>
-                        <label><input type="checkbox" class="filtro-tipo" value="publica-gratis" checked /> Pública Gratuita</label><br>
+                        <label><input type="checkbox" class="filtro-tipo" value="coberto" /> Coberto</label><br>
+                        <label><input type="checkbox" class="filtro-tipo" value="descoberto" /> Descoberto</label><br>
+                        <label><input type="checkbox" class="filtro-tipo" value="publica-gratis" /> Pública Gratuita</label><br>
+                        <label><input type="checkbox" class="filtro-tipo" value="geral" /> Geral</label><br>
                     </div>
 
                     <div class="filtro-card">
                         <h4>Modo de Cobrança</h4>
-                        <label><input type="checkbox" class="filtro-cobranca" value="hora" checked /> Por Hora</label><br>
-                        <label><input type="checkbox" class="filtro-cobranca" value="diaria" checked /> Diária</label><br>
-                        <label><input type="checkbox" class="filtro-cobranca" value="mensal" checked /> Mensal</label><br>
+                        <label><input type="checkbox" class="filtro-cobranca" value="por hora" /> Por Hora</label><br>
+                        <label><input type="checkbox" class="filtro-cobranca" value="diária" /> Diária</label><br>
+                        <label><input type="checkbox" class="filtro-cobranca" value="mensal" /> Mensal</label><br>
                     </div>
 
                     <div class="filtro-card">
                         <h4>Horário de Atendimento</h4>
-                        <label><input type="checkbox" class="filtro-horario" value="comercial" checked /> Comercial</label><br>
-                        <label><input type="checkbox" class="filtro-horario" value="ate-22" checked /> Até 22h</label><br>
-                        <label><input type="checkbox" class="filtro-horario" value="24h" checked /> 24h</label><br>
+                        <label><input type="checkbox" class="filtro-horario" value="08:00 - 18:00" /> Comercial</label><br>
+                        <label><input type="checkbox" class="filtro-horario" value="ate-22" /> Até 22h</label><br>
+                        <label><input type="checkbox" class="filtro-horario" value="24h" /> 24h</label><br>
                     </div>
 
                     <div class="filtro-card">
                         <h4>Dias de Funcionamento</h4>
-                        <label><input type="checkbox" class="filtro-dias" value="seg-sex" checked /> Seg. à Sex.</label><br>
-                        <label><input type="checkbox" class="filtro-dias" value="sabado" checked /> Sábado</label><br>
-                        <label><input type="checkbox" class="filtro-dias" value="todos" checked /> Todos os dias</label><br>
+                        <label><input type="checkbox" class="filtro-dias" value="segunda a sexta" /> Seg. à Sex.</label><br>
+                        <label><input type="checkbox" class="filtro-dias" value="sabado" /> Sábado</label><br>
+                        <label><input type="checkbox" class="filtro-dias" value="todos os dias" /> Todos os dias</label><br>
                     </div>
 
                     <div class="filtro-card">
@@ -195,11 +203,11 @@
         </section>
 
         <section class="estacionamentos-coluna">
-            <!-- ATUALIZADO: A div #lista-favoritos será o container para os itens da API -->
-            <div class="estacionamentos" id="lista-favoritos">
+            <div class="estacionamentos">
                 <h3>Vagas Favoritas</h3>
-                <p>Carregando seus favoritos...</p>
-                <!-- O conteúdo estático foi removido daqui e será gerado pelo script -->
+                <div id="lista-favoritos">
+                    <p>Carregando seus favoritos...</p>
+                </div>
             </div>
         </section>
         
@@ -212,59 +220,74 @@
     <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            var mapa = L.map('mapa').setView([-15.7942, -47.8822], 5);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data © OpenStreetMap contributors'
-            }).addTo(mapa);
+            const mapa = L.map('mapa').setView([-15.7942, -47.8822], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);
             
             const listaFavoritosDiv = document.getElementById('lista-favoritos');
-
-            // NOVO: Função para buscar os dados da API
-            async function buscarFavoritos() {
+            let marcadoresNoMapa = [];
+            
+            async function buscarErenderizarFavoritos() {
                 try {
-                    // Busca os dados da sua API de favoritos
-                    const response = await fetch('/favoritos/', {
-                        credentials: 'include' // Essencial para autenticação por sessão
-                    });
-                    if (!response.ok) {
-                        throw new Error('Falha ao carregar os dados do servidor.');
-                    }
+                    const response = await fetch('/favoritos/', { credentials: 'include' });
+                    if (!response.ok) throw new Error('Falha na API');
                     const favoritos = await response.json();
-                    renderizarFavoritos(favoritos);
-                } catch (error) {
-                    console.error('Erro ao buscar favoritos:', error);
-                    listaFavoritosDiv.innerHTML = `<h3>Vagas Favoritas</h3><p style="color: red;">Não foi possível carregar seus favoritos.</p>`;
-                }
-            }
-
-            // NOVO: Função para renderizar os dados na tela
-            function renderizarFavoritos(favoritos) {
-                // Limpa a div, mas mantém o título
-                listaFavoritosDiv.innerHTML = '<h3>Vagas Favoritas</h3>';
-
-                if (favoritos.length === 0) {
-                    listaFavoritosDiv.innerHTML += '<p>Você ainda não possui estacionamentos favoritos.</p>';
-                    return;
-                }
-
-                favoritos.forEach(favorito => {
-                    const vagaDiv = document.createElement('div');
-                    vagaDiv.className = 'vaga';
                     
-                    // Como a API só retorna o nome, exibimos apenas ele.
-                    // Os detalhes para os filtros e mapa não estão disponíveis na API.
-                    vagaDiv.innerHTML = `
-                        <strong>${favorito.estacionamento_nome}</strong>
-                        <p style="font-size: 12px; color: #888;">Detalhes adicionais não disponíveis.</p>
-                    `;
-                    listaFavoritosDiv.appendChild(vagaDiv);
-                });
+                    listaFavoritosDiv.innerHTML = ''; 
+                    marcadoresNoMapa.forEach(m => mapa.removeLayer(m));
+                    marcadoresNoMapa = [];
+
+                    if (favoritos.length === 0) {
+                        listaFavoritosDiv.innerHTML = '<p>Você ainda não tem estacionamentos favoritos.</p>';
+                        return;
+                    }
+
+                    favoritos.forEach(fav => {
+                        const est = fav.estacionamento;
+                        if (!est) return;
+
+                        const vagaDiv = document.createElement('div');
+                        vagaDiv.className = 'vaga';
+                        // Adicionando os data-attributes para os filtros funcionarem
+                        vagaDiv.dataset.categoria = est.categoria?.toLowerCase() || 'geral';
+                        vagaDiv.dataset.tipo = est.tipo?.toLowerCase() || 'geral';
+                        vagaDiv.dataset.cobranca = est.modo_cobranca?.toLowerCase() || 'hora';
+                        vagaDiv.dataset.horario = est.horario_atendimento?.toLowerCase() || 'comercial';
+                        vagaDiv.dataset.dias = est.dias_funcionamento?.toLowerCase().replace(/\s+/g, '-').replace('à', 'a') || 'seg-a-sex';
+                        vagaDiv.dataset.lat = est.latitude;
+                        vagaDiv.dataset.lng = est.longitude;
+
+                        // ATUALIZADO: Exibindo todos os detalhes do estacionamento
+                        vagaDiv.innerHTML = `
+                            <strong>${est.nome}</strong>
+                            <p>Endereço: ${est.endereco || 'Não informado'}</p>
+                            <p>Preço: R$${parseFloat(est.preco || 0).toFixed(2)}</p>
+                            <p>Tipo: ${est.tipo || 'Não informado'}</p>
+                            <p>Cobrança: ${est.modo_cobranca || 'Não informado'}</p>
+                            <p>Funcionamento: ${est.dias_funcionamento || 'Não informado'}</p>
+                            <p>Horário: ${est.horario_atendimento || 'Não informado'}</p>
+                        `;
+                        
+                        if (est.latitude && est.longitude) {
+                            const marcador = L.marker([est.latitude, est.longitude])
+                                .addTo(mapa)
+                                .bindPopup(`<b>${est.nome}</b>`);
+                            marcadoresNoMapa.push(marcador);
+                            
+                            vagaDiv.addEventListener('click', () => {
+                                mapa.setView([est.latitude, est.longitude], 15);
+                                marcador.openPopup();
+                            });
+                        }
+                        listaFavoritosDiv.appendChild(vagaDiv);
+                    });
+                    
+                    aplicarFiltros();
+                } catch (error) {
+                    console.error("Erro:", error);
+                    listaFavoritosDiv.innerHTML = '<p style="color:red;">Erro ao carregar favoritos.</p>';
+                }
             }
-
-            // ATENÇÃO: As funções de filtro abaixo não funcionarão corretamente
-            // pois os dados completos (categoria, tipo, etc.) não vêm da API.
-            // Elas foram mantidas para não quebrar a estrutura do seu código original.
-
+            
             const checkboxes = {
                 categoria: document.querySelectorAll('.filtro-categoria'),
                 tipo: document.querySelectorAll('.filtro-tipo'),
@@ -278,44 +301,92 @@
             let marcadorReferencia = null;
 
             noUiSlider.create(slider, {
-                start: [10],
-                connect: 'lower',
-                step: 1,
+                start: [10], connect: 'lower', step: 1,
                 range: { min: 1, max: 100 },
-                format: {
-                    to: value => Math.round(value),
-                    from: value => Number(value)
-                }
+                format: { to: v => Math.round(v), from: v => Number(v) }
             });
 
             distanciaValor.textContent = slider.noUiSlider.get();
 
             function aplicarFiltros() {
-                // Esta função não terá efeito nos itens carregados da API,
-                // pois eles não possuem os 'data-attributes' necessários.
-                console.warn("Filtros não aplicados: os dados completos não estão disponíveis na API.");
-            }
+                const filtrosAtivos = {
+                    categoria: Array.from(checkboxes.categoria).filter(cb => cb.checked).map(cb => cb.value),
+                    tipo: Array.from(checkboxes.tipo).filter(cb => cb.checked).map(cb => cb.value),
+                    cobranca: Array.from(checkboxes.cobranca).filter(cb => cb.checked).map(cb => cb.value.toLowerCase()),
+                    horario: Array.from(checkboxes.horario).filter(cb => cb.checked).map(cb => cb.value.toLowerCase()),
+                    dias: Array.from(checkboxes.dias).filter(cb => cb.checked).map(cb => cb.value.toLowerCase().replace(/\s+/g, '-').replace('à', 'a')),
+                };
+                const distanciaMax = Number(slider.noUiSlider.get());
+                
+                const vagas = document.querySelectorAll('#lista-favoritos .vaga');
+                let visibleCount = 0;
 
-            Object.values(checkboxes).forEach(grupo => {
-                grupo.forEach(cb => cb.addEventListener('change', aplicarFiltros));
-            });
+                vagas.forEach(vaga => {
+                    const passaFiltrosCheckbox = Object.keys(filtrosAtivos).every(filtroKey => {
+                        const filtrosDaCategoria = filtrosAtivos[filtroKey];
+                        if (filtrosDaCategoria.length === 0) return true;
+                        return filtrosDaCategoria.includes(vaga.dataset[filtroKey]);
+                    });
+
+                    let passaFiltroDistancia = true;
+                    if (pontoReferencia) {
+                        const lat = parseFloat(vaga.dataset.lat);
+                        const lng = parseFloat(vaga.dataset.lng);
+                        if(!isNaN(lat) && !isNaN(lng)) {
+                            const dist = mapa.distance(pontoReferencia, [lat, lng]) / 1000;
+                            passaFiltroDistancia = dist <= distanciaMax;
+                        } else {
+                            passaFiltroDistancia = false;
+                        }
+                    }
+
+                    if (passaFiltrosCheckbox && passaFiltroDistancia) {
+                        vaga.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        vaga.style.display = 'none';
+                    }
+                });
+
+                let noResultsMsg = listaFavoritosDiv.querySelector('.no-results-message');
+                if (visibleCount === 0 && vagas.length > 0) {
+                    if (!noResultsMsg) {
+                        noResultsMsg = document.createElement('p');
+                        noResultsMsg.className = 'no-results-message';
+                        noResultsMsg.textContent = 'Nenhum favorito corresponde aos filtros selecionados.';
+                        noResultsMsg.style.textAlign = 'center';
+                        noResultsMsg.style.marginTop = '20px';
+                        listaFavoritosDiv.appendChild(noResultsMsg);
+                    }
+                } else {
+                    if (noResultsMsg) {
+                        noResultsMsg.remove();
+                    }
+                }
+            }
+            
+            Object.values(checkboxes).forEach(grupo => grupo.forEach(cb => cb.addEventListener('change', aplicarFiltros)));
 
             slider.noUiSlider.on('update', (values) => {
                 distanciaValor.textContent = values[0];
-                aplicarFiltros();
+                aplicarFiltros(); 
             });
 
             mapa.on('click', e => {
                 pontoReferencia = e.latlng;
-                if (marcadorReferencia) {
-                    mapa.removeLayer(marcadorReferencia);
-                }
+                if (marcadorReferencia) mapa.removeLayer(marcadorReferencia);
                 marcadorReferencia = L.marker(pontoReferencia).addTo(mapa).bindPopup('Ponto de referência').openPopup();
                 aplicarFiltros();
             });
+
+            document.getElementById('botao-limpar').addEventListener('click', () => {
+                if(marcadorReferencia) mapa.removeLayer(marcadorReferencia);
+                pontoReferencia = null;
+                marcadorReferencia = null;
+                aplicarFiltros();
+            });
             
-            // Inicia a busca dos dados da API quando a página carrega
-            buscarFavoritos();
+            buscarErenderizarFavoritos();
         });
     </script>
 </body>
