@@ -96,3 +96,18 @@ class Historico(models.Model):
 
     def __str__(self):
         return f"{self.user.username} parou {self.num_paradas} vezes em {self.estacionamento.nome}"
+    
+
+
+class Favorito(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favoritos')
+    estacionamento = models.ForeignKey(Estacionamento, on_delete=models.CASCADE, related_name='favoritado_por')
+    data_criacao = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'estacionamento')
+        verbose_name = "Favorito"
+        verbose_name_plural = "Favoritos"
+
+    def __str__(self):
+        return f"{self.usuario.username} favoritou {self.estacionamento.nome}"

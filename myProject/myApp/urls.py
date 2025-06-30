@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ClienteViewSet, AdministradorViewSet, EstacionamentoViewSet,
     VagaViewSet, ReservaViewSet, HistoricoViewSet,
-    PossuiViewSet, ContemViewSet, UserViewSet
+    PossuiViewSet, ContemViewSet, UserViewSet,FavoritoViewSet,
 )
 
 # API
@@ -19,7 +19,7 @@ router.register(r'historico', HistoricoViewSet)
 router.register(r'possui', PossuiViewSet)
 router.register(r'contem', ContemViewSet)
 router.register(r'users', UserViewSet)
-
+router.register(r'favoritos', FavoritoViewSet, basename='favorito')
 # Crie uma lista separada para as URLs do router.
 # Elas não terão um prefixo aqui, o prefixo 'api/' será adicionado no urls.py principal.
 api_router_urls = router.urls
@@ -44,6 +44,7 @@ urlpatterns = [
     path('suporte/', views.suporte, name='suporte'),
     path('pagina_favoritos/', views.favoritos, name='favoritos'),
     path("pagina_historico/",views.historico, name="historico"),
+    path('toggle-favorito/', views.toggle_favorito, name='toggle_favorito'),
 
     # --------------- REINICIAÇÃO DE SENHA DO DJANGO -----------------
     path('esqueci_senha_email/', auth_views.PasswordResetView.as_view(

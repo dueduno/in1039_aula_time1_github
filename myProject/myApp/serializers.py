@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cliente, Administrador, Estacionamento, Vaga, Reserva, Historico, Possui, Contem
+from .models import Cliente, Administrador, Estacionamento, Vaga, Reserva, Historico, Possui, Contem, Favorito
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -64,3 +64,27 @@ class ContemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contem
         fields = '__all__'
+
+
+
+class FavoritoSerializer(serializers.ModelSerializer):
+    """
+    Serializer para o modelo Favorito.
+    """
+    # Mostra o username do usuário em vez do ID (apenas para leitura)
+    usuario_username = serializers.CharField(source='usuario.username', read_only=True)
+    
+    # Mostra o nome do estacionamento em vez do ID (apenas para leitura)
+    estacionamento_nome = serializers.CharField(source='estacionamento.nome', read_only=True)
+
+    class Meta:
+        model = Favorito
+        fields = [
+            'id', 
+            'usuario', 
+            'usuario_username', 
+            'estacionamento', 
+            'estacionamento_nome',
+            'data_criacao'
+        ]
+        read_only_fields = ['usuario', 'data_criacao'] # O usuário será pego do request, não enviado no JSON

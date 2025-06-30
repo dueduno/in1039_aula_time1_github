@@ -7,16 +7,19 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone 
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
-
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 # Importe seus modelos. Ajuste os caminhos conforme a estrutura do seu projeto.
-from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva, Historico
+from .models import Cliente, Administrador, Estacionamento, Possui, Vaga, Contem, Reserva, Historico,Favorito
 from django.contrib.auth.models import User 
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash 
-from rest_framework import viewsets
+from rest_framework import viewsets,permissions
 from .serializers import (
     ClienteSerializer, AdministradorSerializer, EstacionamentoSerializer,
     VagaSerializer, ReservaSerializer, HistoricoSerializer,
-    PossuiSerializer, ContemSerializer
+    PossuiSerializer, ContemSerializer,FavoritoSerializer
 )
 
 
@@ -170,12 +173,24 @@ def change_password(request):
 @login_required
 def mapa(request):
     estacionamentos = Estacionamento.objects.all()
-    reserva_ativa_do_usuario = None 
+    reserva_ativa_do_usuario = None
 
-    # Buscar apenas vagas ativas para o usuário
     if request.user.is_authenticated:
+        # Pega a reserva ativa, como você já fazia
         reserva_ativa_do_usuario = Vaga.objects.filter(id_user=request.user, active=True).first()
-    
+
+        # Pega os IDs de todos os estacionamentos que o usuário favoritou.
+        # values_list com flat=True é muito eficiente para isso.
+        favoritos_ids = set(Favorito.objects.filter(usuario=request.user).values_list('estacionamento_id', flat=True))
+
+        # Adiciona um atributo 'is_favorito' em cada objeto de estacionamento.
+        for est in estacionamentos:
+            est.is_favorito = est.id in favoritos_ids
+    else:
+        # Se o usuário não estiver logado, nenhum estacionamento é favorito.
+        for est in estacionamentos:
+            est.is_favorito = False
+
     context = {
         'estacionamentos': estacionamentos,
         'reserva_ativa_do_usuario': reserva_ativa_do_usuario,
@@ -354,6 +369,42 @@ def favoritos(request):
 def historico(request):
      return render(request, "historico.html")   
 
+@login_required
+@require_POST # Garante que esta view só aceita requisições POST
+def toggle_favorito(request):
+    try:
+        # Pega o ID do estacionamento enviado pelo JavaScript
+        data = json.loads(request.body)
+        estacionamento_id = data.get('estacionamento_id')
+
+        if not estacionamento_id:
+            return JsonResponse({'status': 'error', 'message': 'ID do estacionamento não fornecido.'}, status=400)
+
+        estacionamento = Estacionamento.objects.get(pk=estacionamento_id)
+        
+        # Tenta encontrar um favorito existente para este usuário e estacionamento
+        favorito, created = Favorito.objects.get_or_create(
+            usuario=request.user, 
+            estacionamento=estacionamento
+        )
+        
+        if created:
+            # Se foi criado, significa que não era um favorito antes.
+            status = 'favorited'
+            message = 'Estacionamento adicionado aos favoritos!'
+        else:
+            # Se não foi criado (já existia), então removemos.
+            favorito.delete()
+            status = 'unfavorited'
+            message = 'Estacionamento removido dos favoritos.'
+            
+        return JsonResponse({'status': status, 'message': message})
+
+    except Estacionamento.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Estacionamento não encontrado.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
 
 #-----------------------------------------------VIEWS DA API ---------------------------------------------------
 
@@ -393,3 +444,26 @@ class ContemViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class FavoritoViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint que permite aos usuários ver e gerenciar seus estacionamentos favoritos.
+    - Lista apenas os favoritos do usuário logado.
+    - Permite adicionar um novo favorito (POST).
+    - Permite remover um favorito (DELETE).
+    """
+    serializer_class = FavoritoSerializer
+    permission_classes = [permissions.IsAuthenticated] # Apenas usuários logados podem acessar
+
+    def get_queryset(self):
+        """
+        Esta view deve retornar uma lista de todos os favoritos
+        para o usuário atualmente autenticado.
+        """
+        return Favorito.objects.filter(usuario=self.request.user).order_by('-data_criacao')
+
+    def perform_create(self, serializer):
+        """
+        Associa o usuário logado ao criar um novo favorito.
+        """
+        serializer.save(usuario=self.request.user)
