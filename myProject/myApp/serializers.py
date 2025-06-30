@@ -42,10 +42,10 @@ class ReservaSerializer(serializers.ModelSerializer):
 
 class HistoricoSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
-    estacionamento_nome = serializers.CharField(source='estacionamento.nome', read_only=True)
+    estacionamento = EstacionamentoSerializer(read_only=True)
     class Meta:
         model = Historico
-        fields = '__all__'
+        fields = ['id', 'user_username', 'estacionamento', 'num_paradas']
 
 class PossuiSerializer(serializers.ModelSerializer):
     funcionario_nome = serializers.CharField(source='funcionario.nome', read_only=True)
@@ -63,12 +63,6 @@ class ContemSerializer(serializers.ModelSerializer):
 
 
 class FavoritoSerializer(serializers.ModelSerializer):
-    """
-    Serializer para o modelo Favorito.
-    Agora, ele aninha o objeto completo do Estacionamento.
-    """
-    # ATUALIZAÇÃO: Esta linha substitui as antigas 'estacionamento_nome' e 'estacionamento'.
-    # Ela usa o EstacionamentoSerializer para incluir todos os detalhes do estacionamento relacionado.
     estacionamento = EstacionamentoSerializer(read_only=True)
     
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)

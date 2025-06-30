@@ -1,400 +1,343 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Histórico com Accordion e Mapa</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-      height: 100%;
-    }
-
-    .barra-roxa {
-      width: 100%;
-      height: 60px;
-      background-color: #A151E6;
-      padding: 10px 60px;
-      color: white;
-      display: flex;
-      align-items: center;
-      position: relative;
-      font-size: 20px;
-      justify-content: center;
-    }
-
-    .barra-roxa ul {
-      list-style: none;
-      display: flex;
-      gap: 60px;
-      padding-left: 0;
-      margin: 0;
-    }
-
-    .barra-roxa li a {
-      color: white;
-      text-decoration: none;
-    }
-
-    .barra-roxa li a.ativo {
-      font-weight: bold;
-      text-decoration: underline;
-    }
-
-    .botao-voltar {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: transparent;
-      border: none;
-      color: white;
-      font-size: 26px;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .botao-voltar:hover {
-      background-color: rgba(255, 255, 255, 0.3);
-      text-decoration: underline;
-    }
-
-    .principal {
-      display: flex;
-      height: calc(100% - 60px);
-    }
-
-    .lado-esquerdo {
-      width: 40%;
-      padding: 10px;
-      overflow-y: auto;
-      box-sizing: border-box;
-    }
-
-    .lado-direito {
-      width: 60%;
-      height: 100%;
-    }
-
-    #mapa {
-      width: 100%;
-      height: 100%;
-    }
-
-    .linha-abas {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .controle-abas {
-      display: flex;
-      flex-direction: row;
-      margin-right: 10px;
-    }
-
-    .btn-controle {
-      height: 30px;
-      width: 30px;
-      margin-bottom: 5px;
-      background-color: #b049c5;
-      border: none;
-      cursor: pointer;
-      color: white;
-      font-size: 18px;
-      border-radius: 4px;
-    }
-
-    .abas-scroll {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-    }
-
-    .btn-group .btn {
-      font-size: 15px;
-      padding: 5px 10px;
-      width: auto;
-      height: auto;
-      margin: 0 10px;
-      cursor: pointer;
-      user-select: none;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: white;
-      color: #5a2d82;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    .btn-group .btn:hover {
-      background-color: #A151E6;
-      color: white;
-    }
-
-    .btn-group .btn.active {
-      background-color: #A151E6;
-      color: white;
-      font-weight: bold;
-    }
-
-    .lugares-topo {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-
-    .btn-excluir {
-      background-color: white;
-      border: 1px solid #ccc;
-      font-size: 18px;
-      cursor: pointer;
-      color: red;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      line-height: 26px;
-      text-align: center;
-      padding: 0;
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      z-index: 2;
-    }
-
-    /* Accordion custom padding */
-    .accordion-button {
-      font-weight: bold;
-      color: #5a2d82;
-    }
-    .accordion-body {
-      background-color: #f8f9fa;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <title>Histórico com Accordion e Mapa</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            height: 100%;
+        }
+        .barra-roxa {
+            width: 100%;
+            height: 60px;
+            background-color: #A151E6;
+            padding: 10px 60px;
+            color: white;
+            display: flex;
+            align-items: center;
+            position: relative;
+            font-size: 20px;
+            justify-content: center;
+        }
+        .barra-roxa ul {
+            list-style: none;
+            display: flex;
+            gap: 60px;
+            padding-left: 0;
+            margin: 0;
+        }
+        .barra-roxa li a {
+            color: white;
+            text-decoration: none;
+        }
+        .barra-roxa li a.ativo {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .botao-voltar {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 26px;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .botao-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            text-decoration: underline;
+        }
+        .principal {
+            display: flex;
+            height: calc(100% - 60px);
+        }
+        .lado-esquerdo {
+            width: 40%;
+            padding: 10px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .lado-direito {
+            width: 60%;
+            height: 100%;
+        }
+        #mapa {
+            width: 100%;
+            height: 100%;
+        }
+        .linha-abas {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .controle-abas {
+            display: flex;
+            flex-direction: row;
+            margin-right: 10px;
+        }
+        .btn-controle {
+            height: 30px;
+            width: 30px;
+            margin-bottom: 5px;
+            background-color: #b049c5;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            border-radius: 4px;
+        }
+        .abas-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+        }
+        .btn-group .btn {
+            font-size: 15px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            color: #5a2d82;
+        }
+        .btn-group .btn:hover {
+            background-color: #A151E6;
+            color: white;
+        }
+        .btn-group .btn.active {
+            background-color: #A151E6;
+            color: white;
+            font-weight: bold;
+        }
+        .lugares-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .btn-excluir {
+            background-color: white;
+            border: 1px solid #ccc;
+            font-size: 18px;
+            cursor: pointer;
+            color: red;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            line-height: 26px;
+            text-align: center;
+            padding: 0;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 2;
+        }
+        .accordion-button {
+            font-weight: bold;
+            color: #5a2d82;
+        }
+        .accordion-body {
+            background-color: #f8f9fa;
+        }
+        .accordion-body div {
+            padding: 2px 0;
+        }
+    </style>
 </head>
 <body>
 
-  <header class="barra-roxa">
-    <button class="botao-voltar" onclick="history.back()">← Voltar</button>
-    <nav>
-      <ul>
-        <li><a href="historico.html" class="ativo">Histórico</a></li>
-        <li><a href="favoritos.html">Favoritos</a></li>
-        <li><a href="#">Recentes</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header class="barra-roxa">
+        <button class="botao-voltar" onclick="history.back()">← Voltar</button>
+        <nav>
+            <ul>
+                <li><a href="historico.html" class="ativo">Histórico</a></li>
+                <li><a href="favoritos.html">Favoritos</a></li>
+                <li><a href="#">Recentes</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <main class="principal">
-    <section class="lado-esquerdo">
-      <div class="linha-abas">
-        <div class="controle-abas">
-          <button class="btn-controle" title="Limpar filtro" id="btnLimparFiltro">🗑️</button>
-        </div>
-        <div class="abas-scroll">
-          <div class="btn-group btn-group-toggle" data-toggle="buttons" id="filtro-tempo">
-            <label class="btn" data-filter="hoje"><input type="radio" name="tabs" hidden> Hoje</label>
-            <label class="btn" data-filter="ontem"><input type="radio" name="tabs" hidden> Ontem</label>
-            <label class="btn" data-filter="estaSemana"><input type="radio" name="tabs" hidden> Esta Semana</label>
-            <label class="btn" data-filter="esteMes"><input type="radio" name="tabs" hidden> Este Mês</label>
-            <label class="btn" data-filter="ultimos6Meses"><input type="radio" name="tabs" hidden> Últimos 6 meses</label>
-            <label class="btn" data-filter="mais6Meses"><input type="radio" name="tabs" hidden> Mais de 6 meses</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="lugares-topo">
-        <span>Lugares:</span>
-        <div class="controle-lugares">
-          <button class="btn-controle" title="Limpar lugares" id="btnLimparLugar">🗑️</button>
-        </div>
-      </div>
-
-      <div id="mensagem-vazia" class="alert alert-info text-center d-none">
-        Você ainda não possui histórico.
-      </div>
-
-      <div class="accordion" id="accordionVagas">
-        </div>
-    </section>
-
-    <section class="lado-direito">
-      <div id="mapa"></div>
-    </section>
-  </main>
-
-  <div class="modal fade" id="modalConfirmarExclusao" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Confirmar exclusão</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          Tem certeza que deseja excluir este item do histórico?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger" id="confirmarExclusao">Excluir</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      // --- CONFIGURAÇÃO ---
-      const API_URL = 'http://127.0.0.1:8000/historico/';
-
-      // --- ELEMENTOS DO HTML ---
-      const mapa = L.map('mapa').setView([-23.55052, -46.633308], 5);
-      const accordionVagas = document.getElementById("accordionVagas");
-      const mensagemVazia = document.getElementById("mensagem-vazia");
-      const filtroTempoContainer = document.getElementById("filtro-tempo");
-      const btnLimparFiltro = document.getElementById("btnLimparFiltro");
-      const modalExclusao = new bootstrap.Modal(document.getElementById('modalConfirmarExclusao'));
-      const btnConfirmarExclusao = document.getElementById('confirmarExclusao');
-      
-      let marcador = null;
-      let locais = []; // Array principal que guardará os dados da API
-      let itensExibidos = []; // Array para os itens filtrados
-      let indiceParaExcluir = null;
-
-      // --- INICIALIZAÇÃO DO MAPA ---
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(mapa);
-
-      /**
-       * Transforma os dados da sua API para o formato que o HTML espera.
-       * **AVISO:** Muitos campos estão faltando na sua API (coords, data, etc.).
-       * Eles foram preenchidos com valores padrão para evitar erros.
-       */
-      function transformarApiParaLocal(itemApi) {
-        return {
-          id: itemApi.id,
-          nome: itemApi.estacionamento_nome, // Mapeado de 'estacionamento_nome'
-          num_paradas: itemApi.num_paradas,
-          // --- CAMPOS FALTANDO NA SUA API ---
-          coords: null, // Sem coordenadas, o mapa não funcionará para este item
-          tempoVaga: "N/A",
-          tipo: "N/A",
-          tempoPrevisto: "N/A",
-          entrada: "N/A",
-          localizacao: "N/A",
-          data: new Date() // Sem data, os filtros de tempo não funcionarão
-        };
-      }
-      
-      // --- FUNÇÕES PRINCIPAIS ---
-
-      // Função para buscar dados da sua API Django
-      async function buscarHistorico() {
-        try {
-          const response = await fetch(API_URL, {
-            // ESSENCIAL para autenticação por sessão do Django!
-            credentials: 'include' 
-          });
-
-          if (!response.ok) {
-            // Se a resposta não for 200 OK (ex: 403 Forbidden se não estiver logado)
-            throw new Error(`Erro na API: ${response.statusText}`);
-          }
-
-          const dadosApi = await response.json();
-          locais = dadosApi.map(transformarApiParaLocal); // Transforma os dados da API
-          itensExibidos = [...locais];
-          atualizarLista();
-
-        } catch (error) {
-          console.error("Falha ao buscar o histórico:", error);
-          accordionVagas.innerHTML = `<div class="alert alert-danger">Não foi possível carregar o histórico. Verifique o console para mais detalhes.</div>`;
-        }
-      }
-
-      // Atualiza a lista no HTML com os dados
-      function atualizarLista() {
-        accordionVagas.innerHTML = "";
-        if (itensExibidos.length === 0) {
-          mensagemVazia.classList.remove("d-none");
-        } else {
-          mensagemVazia.classList.add("d-none");
-
-          itensExibidos.forEach((item, index) => {
-            const idCollapse = `collapse${index}`;
-            const itemHTML = document.createElement("div");
-            itemHTML.classList.add("accordion-item");
-            itemHTML.style.position = "relative";
-            
-            // ATENÇÃO: A data não vem da API, então o filtro de tempo não funcionará.
-            // O título mostrará apenas o nome do estacionamento.
-            itemHTML.innerHTML = `
-              <h2 class="accordion-header" id="heading${index}">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${idCollapse}" aria-expanded="false" aria-controls="${idCollapse}">
-                  ${item.nome}
-                </button>
-              </h2>
-              <div id="${idCollapse}" class="accordion-collapse collapse" aria-labelledby="heading${index}" data-bs-parent="#accordionVagas">
-                <div class="accordion-body">
-                  <div><b>Número de paradas:</b> ${item.num_paradas || 'N/A'}</div>
-                  
-                  <div class="mt-2 small text-muted">
-                    Detalhes adicionais e localização no mapa não disponíveis para este item.
-                  </div>
+    <main class="principal">
+        <section class="lado-esquerdo">
+            <div class="linha-abas">
+                <div class="controle-abas">
+                    <button class="btn-controle" title="Limpar filtro" id="btnLimparFiltro">🗑️</button>
                 </div>
-              </div>
-            `;
-            
-            // O botão de excluir ainda pode funcionar se você criar a API para isso
-            const btnExcluir = document.createElement("button");
-            btnExcluir.textContent = "×";
-            btnExcluir.title = "Excluir item";
-            btnExcluir.classList.add("btn-excluir");
-            btnExcluir.onclick = (e) => {
-              e.stopPropagation();
-              alert("Funcionalidade de exclusão precisa de uma API DELETE. Ex: DELETE /historico/" + item.id);
-              // indiceParaExcluir = locais.indexOf(item);
-              // modalExclusao.show();
-            };
+                <div class="abas-scroll">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons" id="filtro-tempo">
+                        <label class="btn" data-filter="hoje"><input type="radio" name="tabs" hidden> Hoje</label>
+                        <label class="btn" data-filter="ontem"><input type="radio" name="tabs" hidden> Ontem</label>
+                        <label class="btn" data-filter="estaSemana"><input type="radio" name="tabs" hidden> Esta Semana</label>
+                        <label class="btn" data-filter="esteMes"><input type="radio" name="tabs" hidden> Este Mês</label>
+                    </div>
+                </div>
+            </div>
 
-            itemHTML.appendChild(btnExcluir);
-            accordionVagas.appendChild(itemHTML);
+            <div class="lugares-topo">
+                <span>Lugares:</span>
+            </div>
+
+            <div id="mensagem-vazia" class="alert alert-info text-center d-none">
+                Você ainda não possui histórico.
+            </div>
+
+            <div class="accordion" id="accordionVagas">
+                <!-- Conteúdo será gerado dinamicamente -->
+            </div>
+        </section>
+
+        <section class="lado-direito">
+            <div id="mapa"></div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const API_URL = '/historico/'; 
+            const mapa = L.map('mapa').setView([-23.55052, -46.633308], 5);
+            const accordionVagas = document.getElementById("accordionVagas");
+            const mensagemVazia = document.getElementById("mensagem-vazia");
+            const filtroTempoContainer = document.getElementById("filtro-tempo");
+            const btnLimparFiltro = document.getElementById("btnLimparFiltro");
+            let marcador = null;
+            let historicoCompleto = []; // Guarda todos os itens da API
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);
+
+            // ATUALIZADO: Função para transformar dados da API, agora com detalhes do estacionamento
+            function transformarDadosApi(itemApi) {
+                const est = itemApi.estacionamento;
+                return {
+                    id: itemApi.id,
+                    nome: est.nome,
+                    num_paradas: itemApi.num_paradas,
+                    // Detalhes completos do estacionamento
+                    endereco: est.endereco,
+                    preco: est.preco,
+                    tipo: est.tipo,
+                    modo_cobranca: est.modo_cobranca,
+                    dias_funcionamento: est.dias_funcionamento,
+                    horario_atendimento: est.horario_atendimento,
+                    coords: (est.latitude && est.longitude) ? [est.latitude, est.longitude] : null,
+                    // ATENÇÃO: Sua API de histórico não tem data. O filtro de tempo não funcionará.
+                    data: new Date(itemApi.data_visita || Date.now()) // Assumindo um campo 'data_visita' que você pode adicionar no futuro
+                };
+            }
             
-            // Eventos para o mapa (não funcionarão sem coordenadas)
-            const collapseEl = itemHTML.querySelector(`#${idCollapse}`);
-            collapseEl.addEventListener('show.bs.collapse', () => {
-              if (item.coords) { // Só executa se houver coordenadas
-                if (marcador) {
-                  mapa.removeLayer(marcador);
+            async function buscarHistorico() {
+                try {
+                    const response = await fetch(API_URL, { credentials: 'include' });
+                    if (!response.ok) throw new Error('Erro na API');
+                    
+                    const dadosApi = await response.json();
+                    historicoCompleto = dadosApi.map(transformarDadosApi);
+                    renderizarLista(historicoCompleto);
+                } catch (error) {
+                    console.error("Falha ao buscar o histórico:", error);
+                    accordionVagas.innerHTML = `<div class="alert alert-danger">Não foi possível carregar o histórico.</div>`;
                 }
-                marcador = L.marker(item.coords).addTo(mapa);
-                mapa.setView(item.coords, 15);
-              }
+            }
+            
+            // ATUALIZADO: Renderiza a lista com todos os detalhes
+            function renderizarLista(itens) {
+                accordionVagas.innerHTML = "";
+                if (itens.length === 0) {
+                    mensagemVazia.classList.remove("d-none");
+                } else {
+                    mensagemVazia.classList.add("d-none");
+                }
+
+                itens.forEach((item, index) => {
+                    const idAccordion = `vagaAccordion${index}`;
+                    const idCollapse = `collapse${index}`;
+                    const itemHTML = document.createElement("div");
+                    itemHTML.classList.add("accordion-item");
+
+                    itemHTML.innerHTML = `
+                        <h2 class="accordion-header" id="heading${index}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${idCollapse}">
+                                ${item.nome} - ${item.data.toLocaleDateString('pt-BR')}
+                            </button>
+                        </h2>
+                        <div id="${idCollapse}" class="accordion-collapse collapse" data-bs-parent="#accordionVagas">
+                            <div class="accordion-body">
+                                <div><b>Número de paradas:</b> ${item.num_paradas || 'N/A'}</div>
+                                <hr>
+                                <div><b>Endereço:</b> ${item.endereco || 'Não informado'}</div>
+                                <div><b>Preço:</b> R$${parseFloat(item.preco || 0).toFixed(2)}</div>
+                                <div><b>Tipo:</b> ${item.tipo || 'Não informado'}</div>
+                                <div><b>Cobrança:</b> ${item.modo_cobranca || 'Não informado'}</div>
+                                <div><b>Funcionamento:</b> ${item.dias_funcionamento || 'Não informado'}</div>
+                                <div><b>Horário:</b> ${item.horario_atendimento || 'Não informado'}</div>
+                            </div>
+                        </div>
+                    `;
+                    accordionVagas.appendChild(itemHTML);
+
+                    // ATUALIZADO: Evento do mapa agora funciona com coordenadas reais
+                    const collapseEl = itemHTML.querySelector(`#${idCollapse}`);
+                    collapseEl.addEventListener('show.bs.collapse', () => {
+                        if (item.coords) {
+                            if (marcador) mapa.removeLayer(marcador);
+                            marcador = L.marker(item.coords).addTo(mapa);
+                            mapa.setView(item.coords, 15);
+                        }
+                    });
+                });
+            }
+
+            // AVISO: A função de filtro de tempo abaixo precisa de um campo de data na API para funcionar corretamente.
+            function filtrarPorTempo(tipoFiltro) {
+                const agora = new Date();
+                const itensFiltrados = historicoCompleto.filter(item => {
+                    const dataItem = new Date(item.data);
+                    switch (tipoFiltro) {
+                        case 'hoje':
+                            return dataItem.toDateString() === agora.toDateString();
+                        case 'ontem':
+                            const ontem = new Date();
+                            ontem.setDate(agora.getDate() - 1);
+                            return dataItem.toDateString() === ontem.toDateString();
+                        case 'estaSemana':
+                            const primeiroDiaSemana = new Date(agora);
+                            primeiroDiaSemana.setDate(agora.getDate() - agora.getDay() + (agora.getDay() === 0 ? -6 : 1));
+                            return dataItem >= primeiroDiaSemana && dataItem <= agora;
+                        case 'esteMes':
+                            return dataItem.getMonth() === agora.getMonth() && dataItem.getFullYear() === agora.getFullYear();
+                        default: return true;
+                    }
+                });
+                renderizarLista(itensFiltrados);
+            }
+
+            filtroTempoContainer.addEventListener("click", e => {
+                if (e.target.classList.contains("btn")) {
+                    document.querySelectorAll('#filtro-tempo .btn').forEach(btn => btn.classList.remove("active"));
+                    e.target.classList.add("active");
+                    const filtroSelecionado = e.target.dataset.filter;
+                    filtrarPorTempo(filtroSelecionado);
+                }
             });
-          });
-        }
-      }
 
-      // ABRIR ALERTA: Filtros não funcionarão sem data na API
-      filtroTempoContainer.addEventListener("click", () => {
-          alert("Os filtros por data não funcionarão. É necessário que sua API retorne um campo de data para cada item do histórico.");
-      });
-      btnLimparFiltro.addEventListener("click", () => {
-          alert("Os filtros por data não funcionarão.");
-      });
+            btnLimparFiltro.addEventListener("click", () => {
+                document.querySelectorAll('#filtro-tempo .btn').forEach(btn => btn.classList.remove("active"));
+                renderizarLista(historicoCompleto);
+            });
 
-      // Inicializa a busca de dados quando a página carrega
-      buscarHistorico();
-    });
-  </script>
-
+            buscarHistorico();
+        });
+    </script>
 </body>
 </html>
